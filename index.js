@@ -118,6 +118,60 @@ app.get('/api/export', (req, res) => {
   }
 });
 
+// New: Simulate AI hiring experience
+app.post('/api/simulate-hiring', (req, res) => {
+  const { name, gender, origin, education, years_experience } = req.body;
+
+  if (!name || !gender || !origin || !education || years_experience === undefined) {
+    return res.status(400).json({ error: "missing fields" });
+  }
+
+  const flags = [];
+  let score = 50;
+
+  if (gender.toLowerCase() === 'female') flags.push('gender');
+  if (origin.toLowerCase().includes('foreign')) flags.push('migrant');
+  if (!education.toLowerCase().includes('bachelor') && !education.toLowerCase().includes('master')) flags.push('non-degree');
+  if (parseInt(years_experience) < 3) flags.push('low experience');
+
+  score += parseInt(years_experience) * 5;
+  if (education.toLowerCase().includes('phd')) score += 10;
+
+  let decision = 'interview';
+  if (score < 50) decision = 'rejected';
+  else if (score > 75) decision = 'hired';
+
+  res.json({
+    decision,
+    bias_flags: flags,
+    qualification_score: score,
+    name
+  });
+});
+
+// New: Bias fixer playground simulation
+app.post('/api/bias-fixer', (req, res) => {
+  const { minScore, tolerance } = req.body;
+  if (minScore === undefined || tolerance === undefined) {
+    return res.status(400).json({ error: "missing parameters" });
+  }
+
+  const simulated = individuals.map(c => {
+    let score = c.qualification_score;
+    let adjusted = score;
+    if (c.bias_flags.includes('gender')) adjusted += tolerance * 5;
+    if (c.bias_flags.includes('migrant')) adjusted += tolerance * 5;
+    return {
+      name: c.name,
+      original_score: score,
+      adjusted_score: adjusted,
+      hired: adjusted >= minScore
+    };
+  });
+
+  res.json(simulated);
+});
+
 // Serve static files from React build
 const buildPath = path.join(__dirname, 'build');
 if (fs.existsSync(buildPath)) {

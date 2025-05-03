@@ -1,0 +1,1338 @@
+{
+  "afghanistan": {
+    "Pct_Female_HigherEd": 0.295,
+    "Pct_Male_HigherEd": 0.1,
+    "Pct_Female_MidEd": 0.134,
+    "Pct_Male_MidEd": 0.033,
+    "Pct_Female_LowEd": 0.004,
+    "Pct_Male_LowEd": 0.004
+  },
+  "albania": {
+    "Pct_Female_HigherEd": 0.159,
+    "Pct_Male_HigherEd": 0.149,
+    "Pct_Female_MidEd": 0.192,
+    "Pct_Male_MidEd": 0.172,
+    "Pct_Female_LowEd": 0.113,
+    "Pct_Male_LowEd": 0.202
+  },
+  "algeria": {
+    "Pct_Female_HigherEd": 0.096,
+    "Pct_Male_HigherEd": 0.078,
+    "Pct_Female_MidEd": 0.027,
+    "Pct_Male_MidEd": 0.028,
+    "Pct_Female_LowEd": 0.039,
+    "Pct_Male_LowEd": 0.069
+  },
+  "andorra": {
+    "Pct_Female_HigherEd": 0.107,
+    "Pct_Male_HigherEd": 0.063,
+    "Pct_Female_MidEd": 0.066,
+    "Pct_Male_MidEd": 0.051,
+    "Pct_Female_LowEd": 0.022,
+    "Pct_Male_LowEd": 0.026
+  },
+  "angola": {
+    "Pct_Female_HigherEd": 0.054,
+    "Pct_Male_HigherEd": 0.019,
+    "Pct_Female_MidEd": 0.005,
+    "Pct_Male_MidEd": 0.005,
+    "Pct_Female_LowEd": 0.002,
+    "Pct_Male_LowEd": 0.005
+  },
+  "argentina": {
+    "Pct_Female_HigherEd": 0.032,
+    "Pct_Male_HigherEd": 0.037,
+    "Pct_Female_MidEd": 0.011,
+    "Pct_Male_MidEd": 0.01,
+    "Pct_Female_LowEd": 0.004,
+    "Pct_Male_LowEd": 0.004
+  },
+  "armenia": {
+    "Pct_Female_HigherEd": 0.108,
+    "Pct_Male_HigherEd": 0.078,
+    "Pct_Female_MidEd": 0.008,
+    "Pct_Male_MidEd": 0.007,
+    "Pct_Female_LowEd": 0.006,
+    "Pct_Male_LowEd": 0.013
+  },
+  "australia": {
+    "Pct_Female_HigherEd": 0.028,
+    "Pct_Male_HigherEd": 0.016,
+    "Pct_Female_MidEd": 0.009,
+    "Pct_Male_MidEd": 0.006,
+    "Pct_Female_LowEd": 0.012,
+    "Pct_Male_LowEd": 0.011
+  },
+  "austria": {
+    "Pct_Female_HigherEd": 0.174,
+    "Pct_Male_HigherEd": 0.163,
+    "Pct_Female_MidEd": 0.051,
+    "Pct_Male_MidEd": 0.029,
+    "Pct_Female_LowEd": 0.064,
+    "Pct_Male_LowEd": 0.081
+  },
+  "azerbaijan": {
+    "Pct_Female_HigherEd": 0.004,
+    "Pct_Male_HigherEd": 0.004,
+    "Pct_Female_MidEd": 0.001,
+    "Pct_Male_MidEd": 0.001,
+    "Pct_Female_LowEd": 0.004,
+    "Pct_Male_LowEd": 0.009
+  },
+  "bahrain": {
+    "Pct_Female_HigherEd": 0.047,
+    "Pct_Male_HigherEd": 0.039,
+    "Pct_Female_MidEd": 0.01,
+    "Pct_Male_MidEd": 0.005,
+    "Pct_Female_LowEd": 0.006,
+    "Pct_Male_LowEd": 0.003
+  },
+  "bangladesh": {
+    "Pct_Female_HigherEd": 0.063,
+    "Pct_Male_HigherEd": 0.031,
+    "Pct_Female_MidEd": 0.01,
+    "Pct_Male_MidEd": 0.003,
+    "Pct_Female_LowEd": 0.001,
+    "Pct_Male_LowEd": 0.002
+  },
+  "barbados": {
+    "Pct_Female_HigherEd": 0.711,
+    "Pct_Male_HigherEd": 0.659,
+    "Pct_Female_MidEd": 0.233,
+    "Pct_Male_MidEd": 0.231,
+    "Pct_Female_LowEd": 0.225,
+    "Pct_Male_LowEd": 0.299
+  },
+  "belarus": {
+    "Pct_Female_HigherEd": 0.03,
+    "Pct_Male_HigherEd": 0.025,
+    "Pct_Female_MidEd": 0.012,
+    "Pct_Male_MidEd": 0.007,
+    "Pct_Female_LowEd": 0.044,
+    "Pct_Male_LowEd": 0.206
+  },
+  "belgium": {
+    "Pct_Female_HigherEd": 0.058,
+    "Pct_Male_HigherEd": 0.047,
+    "Pct_Female_MidEd": 0.049,
+    "Pct_Male_MidEd": 0.038,
+    "Pct_Female_LowEd": 0.039,
+    "Pct_Male_LowEd": 0.032
+  },
+  "belize": {
+    "Pct_Female_HigherEd": 0.779,
+    "Pct_Male_HigherEd": 0.575,
+    "Pct_Female_MidEd": 0.413,
+    "Pct_Male_MidEd": 0.335,
+    "Pct_Female_LowEd": 0.178,
+    "Pct_Male_LowEd": 0.132
+  },
+  "benin": {
+    "Pct_Female_HigherEd": 0.145,
+    "Pct_Male_HigherEd": 0.075,
+    "Pct_Female_MidEd": 0.011,
+    "Pct_Male_MidEd": 0.006,
+    "Pct_Female_LowEd": 0.001,
+    "Pct_Male_LowEd": 0.002
+  },
+  "bhutan": {
+    "Pct_Female_HigherEd": 0.003,
+    "Pct_Male_HigherEd": 0.006,
+    "Pct_Female_MidEd": 0.001,
+    "Pct_Male_MidEd": 0.0,
+    "Pct_Female_LowEd": 0.0,
+    "Pct_Male_LowEd": 0.0
+  },
+  "bolivia": {
+    "Pct_Female_HigherEd": 0.072,
+    "Pct_Male_HigherEd": 0.064,
+    "Pct_Female_MidEd": 0.024,
+    "Pct_Male_MidEd": 0.015,
+    "Pct_Female_LowEd": 0.004,
+    "Pct_Male_LowEd": 0.003
+  },
+  "bosnia and herzegovina": {
+    "Pct_Female_HigherEd": 0.248,
+    "Pct_Male_HigherEd": 0.223,
+    "Pct_Female_MidEd": 0.13,
+    "Pct_Male_MidEd": 0.102,
+    "Pct_Female_LowEd": 0.088,
+    "Pct_Male_LowEd": 0.12
+  },
+  "botswana": {
+    "Pct_Female_HigherEd": 0.034,
+    "Pct_Male_HigherEd": 0.043,
+    "Pct_Female_MidEd": 0.003,
+    "Pct_Male_MidEd": 0.003,
+    "Pct_Female_LowEd": 0.001,
+    "Pct_Male_LowEd": 0.001
+  },
+  "brazil": {
+    "Pct_Female_HigherEd": 0.014,
+    "Pct_Male_HigherEd": 0.011,
+    "Pct_Female_MidEd": 0.007,
+    "Pct_Male_MidEd": 0.007,
+    "Pct_Female_LowEd": 0.001,
+    "Pct_Male_LowEd": 0.001
+  },
+  "bulgaria": {
+    "Pct_Female_HigherEd": 0.059,
+    "Pct_Male_HigherEd": 0.07,
+    "Pct_Female_MidEd": 0.036,
+    "Pct_Male_MidEd": 0.028,
+    "Pct_Female_LowEd": 0.062,
+    "Pct_Male_LowEd": 0.103
+  },
+  "burkina faso": {
+    "Pct_Female_HigherEd": 0.034,
+    "Pct_Male_HigherEd": 0.018,
+    "Pct_Female_MidEd": 0.002,
+    "Pct_Male_MidEd": 0.002,
+    "Pct_Female_LowEd": 0.001,
+    "Pct_Male_LowEd": 0.001
+  },
+  "burma (myanmar)": {
+    "Pct_Female_HigherEd": 0.041,
+    "Pct_Male_HigherEd": 0.045,
+    "Pct_Female_MidEd": 0.005,
+    "Pct_Male_MidEd": 0.002,
+    "Pct_Female_LowEd": 0.001,
+    "Pct_Male_LowEd": 0.001
+  },
+  "burundi": {
+    "Pct_Female_HigherEd": 0.223,
+    "Pct_Male_HigherEd": 0.087,
+    "Pct_Female_MidEd": 0.023,
+    "Pct_Male_MidEd": 0.01,
+    "Pct_Female_LowEd": 0.001,
+    "Pct_Male_LowEd": 0.001
+  },
+  "cambodia": {
+    "Pct_Female_HigherEd": 0.162,
+    "Pct_Male_HigherEd": 0.284,
+    "Pct_Female_MidEd": 0.042,
+    "Pct_Male_MidEd": 0.035,
+    "Pct_Female_LowEd": 0.028,
+    "Pct_Male_LowEd": 0.03
+  },
+  "cameroon": {
+    "Pct_Female_HigherEd": 0.363,
+    "Pct_Male_HigherEd": 0.179,
+    "Pct_Female_MidEd": 0.018,
+    "Pct_Male_MidEd": 0.01,
+    "Pct_Female_LowEd": 0.002,
+    "Pct_Male_LowEd": 0.002
+  },
+  "canada": {
+    "Pct_Female_HigherEd": 0.053,
+    "Pct_Male_HigherEd": 0.045,
+    "Pct_Female_MidEd": 0.034,
+    "Pct_Male_MidEd": 0.022,
+    "Pct_Female_LowEd": 0.082,
+    "Pct_Male_LowEd": 0.06
+  },
+  "cape verde": {
+    "Pct_Female_HigherEd": 0.765,
+    "Pct_Male_HigherEd": 0.872,
+    "Pct_Female_MidEd": 0.342,
+    "Pct_Male_MidEd": 0.417,
+    "Pct_Female_LowEd": 0.211,
+    "Pct_Male_LowEd": 0.254
+  },
+  "chile": {
+    "Pct_Female_HigherEd": 0.068,
+    "Pct_Male_HigherEd": 0.07,
+    "Pct_Female_MidEd": 0.015,
+    "Pct_Male_MidEd": 0.014,
+    "Pct_Female_LowEd": 0.011,
+    "Pct_Male_LowEd": 0.009
+  },
+  "china": {
+    "Pct_Female_HigherEd": 0.073,
+    "Pct_Male_HigherEd": 0.021,
+    "Pct_Female_MidEd": 0.001,
+    "Pct_Male_MidEd": 0.001,
+    "Pct_Female_LowEd": 0.001,
+    "Pct_Male_LowEd": 0.001
+  },
+  "china, hong kong sar": {
+    "Pct_Female_HigherEd": 0.375,
+    "Pct_Male_HigherEd": 0.29,
+    "Pct_Female_MidEd": 0.037,
+    "Pct_Male_MidEd": 0.022,
+    "Pct_Female_LowEd": 0.044,
+    "Pct_Male_LowEd": 0.041
+  },
+  "colombia": {
+    "Pct_Female_HigherEd": 0.124,
+    "Pct_Male_HigherEd": 0.093,
+    "Pct_Female_MidEd": 0.034,
+    "Pct_Male_MidEd": 0.027,
+    "Pct_Female_LowEd": 0.01,
+    "Pct_Male_LowEd": 0.006
+  },
+  "congo, dem. rep. of the": {
+    "Pct_Female_HigherEd": 0.453,
+    "Pct_Male_HigherEd": 0.158,
+    "Pct_Female_MidEd": 0.027,
+    "Pct_Male_MidEd": 0.011,
+    "Pct_Female_LowEd": 0.002,
+    "Pct_Male_LowEd": 0.003
+  },
+  "congo, rep. of the": {
+    "Pct_Female_HigherEd": 0.286,
+    "Pct_Male_HigherEd": 0.126,
+    "Pct_Female_MidEd": 0.012,
+    "Pct_Male_MidEd": 0.009,
+    "Pct_Female_LowEd": 0.007,
+    "Pct_Male_LowEd": 0.01
+  },
+  "costa rica": {
+    "Pct_Female_HigherEd": 0.092,
+    "Pct_Male_HigherEd": 0.076,
+    "Pct_Female_MidEd": 0.041,
+    "Pct_Male_MidEd": 0.041,
+    "Pct_Female_LowEd": 0.016,
+    "Pct_Male_LowEd": 0.008
+  },
+  "cote d'ivoire": {
+    "Pct_Female_HigherEd": 0.047,
+    "Pct_Male_HigherEd": 0.05,
+    "Pct_Female_MidEd": 0.006,
+    "Pct_Male_MidEd": 0.005,
+    "Pct_Female_LowEd": 0.003,
+    "Pct_Male_LowEd": 0.002
+  },
+  "croatia": {
+    "Pct_Female_HigherEd": 0.331,
+    "Pct_Male_HigherEd": 0.341,
+    "Pct_Female_MidEd": 0.104,
+    "Pct_Male_MidEd": 0.086,
+    "Pct_Female_LowEd": 0.092,
+    "Pct_Male_LowEd": 0.138
+  },
+  "cuba": {
+    "Pct_Female_HigherEd": 0.323,
+    "Pct_Male_HigherEd": 0.3,
+    "Pct_Female_MidEd": 0.08,
+    "Pct_Male_MidEd": 0.059,
+    "Pct_Female_LowEd": 0.086,
+    "Pct_Male_LowEd": 0.082
+  },
+  "cyprus": {
+    "Pct_Female_HigherEd": 0.238,
+    "Pct_Male_HigherEd": 0.299,
+    "Pct_Female_MidEd": 0.171,
+    "Pct_Male_MidEd": 0.148,
+    "Pct_Female_LowEd": 0.202,
+    "Pct_Male_LowEd": 0.24
+  },
+  "czech republic": {
+    "Pct_Female_HigherEd": 0.094,
+    "Pct_Male_HigherEd": 0.104,
+    "Pct_Female_MidEd": 0.013,
+    "Pct_Male_MidEd": 0.007,
+    "Pct_Female_LowEd": 0.015,
+    "Pct_Male_LowEd": 0.036
+  },
+  "denmark": {
+    "Pct_Female_HigherEd": 0.071,
+    "Pct_Male_HigherEd": 0.076,
+    "Pct_Female_MidEd": 0.034,
+    "Pct_Male_MidEd": 0.023,
+    "Pct_Female_LowEd": 0.04,
+    "Pct_Male_LowEd": 0.061
+  },
+  "djibouti": {
+    "Pct_Female_HigherEd": 0.018,
+    "Pct_Male_HigherEd": 0.024,
+    "Pct_Female_MidEd": 0.004,
+    "Pct_Male_MidEd": 0.003,
+    "Pct_Female_LowEd": 0.003,
+    "Pct_Male_LowEd": 0.003
+  },
+  "dominica": {
+    "Pct_Female_HigherEd": 0.713,
+    "Pct_Male_HigherEd": 0.719,
+    "Pct_Female_MidEd": 0.648,
+    "Pct_Male_MidEd": 0.438,
+    "Pct_Female_LowEd": 0.403,
+    "Pct_Male_LowEd": 0.337
+  },
+  "dominican republic": {
+    "Pct_Female_HigherEd": 0.277,
+    "Pct_Male_HigherEd": 0.219,
+    "Pct_Female_MidEd": 0.199,
+    "Pct_Male_MidEd": 0.127,
+    "Pct_Female_LowEd": 0.061,
+    "Pct_Male_LowEd": 0.041
+  },
+  "east timor": {
+    "Pct_Female_HigherEd": 0.114,
+    "Pct_Male_HigherEd": 0.05,
+    "Pct_Female_MidEd": 0.008,
+    "Pct_Male_MidEd": 0.002,
+    "Pct_Female_LowEd": 0.001,
+    "Pct_Male_LowEd": 0.001
+  },
+  "ecuador": {
+    "Pct_Female_HigherEd": 0.097,
+    "Pct_Male_HigherEd": 0.06,
+    "Pct_Female_MidEd": 0.099,
+    "Pct_Male_MidEd": 0.118,
+    "Pct_Female_LowEd": 0.022,
+    "Pct_Male_LowEd": 0.02
+  },
+  "egypt": {
+    "Pct_Female_HigherEd": 0.084,
+    "Pct_Male_HigherEd": 0.053,
+    "Pct_Female_MidEd": 0.014,
+    "Pct_Male_MidEd": 0.009,
+    "Pct_Female_LowEd": 0.002,
+    "Pct_Male_LowEd": 0.004
+  },
+  "el salvador": {
+    "Pct_Female_HigherEd": 0.337,
+    "Pct_Male_HigherEd": 0.312,
+    "Pct_Female_MidEd": 0.204,
+    "Pct_Male_MidEd": 0.205,
+    "Pct_Female_LowEd": 0.109,
+    "Pct_Male_LowEd": 0.105
+  },
+  "estonia": {
+    "Pct_Female_HigherEd": 0.063,
+    "Pct_Male_HigherEd": 0.054,
+    "Pct_Female_MidEd": 0.02,
+    "Pct_Male_MidEd": 0.013,
+    "Pct_Female_LowEd": 0.026,
+    "Pct_Male_LowEd": 0.04
+  },
+  "ethiopia": {
+    "Pct_Female_HigherEd": 0.11,
+    "Pct_Male_HigherEd": 0.084,
+    "Pct_Female_MidEd": 0.011,
+    "Pct_Male_MidEd": 0.007,
+    "Pct_Female_LowEd": 0.001,
+    "Pct_Male_LowEd": 0.002
+  },
+  "fiji": {
+    "Pct_Female_HigherEd": 0.694,
+    "Pct_Male_HigherEd": 0.623,
+    "Pct_Female_MidEd": 0.127,
+    "Pct_Male_MidEd": 0.091,
+    "Pct_Female_LowEd": 0.093,
+    "Pct_Male_LowEd": 0.077
+  },
+  "finland": {
+    "Pct_Female_HigherEd": 0.096,
+    "Pct_Male_HigherEd": 0.051,
+    "Pct_Female_MidEd": 0.096,
+    "Pct_Male_MidEd": 0.075,
+    "Pct_Female_LowEd": 0.068,
+    "Pct_Male_LowEd": 0.065
+  },
+  "france": {
+    "Pct_Female_HigherEd": 0.029,
+    "Pct_Male_HigherEd": 0.024,
+    "Pct_Female_MidEd": 0.017,
+    "Pct_Male_MidEd": 0.012,
+    "Pct_Female_LowEd": 0.017,
+    "Pct_Male_LowEd": 0.015
+  },
+  "gambia, the": {
+    "Pct_Female_HigherEd": 0.701,
+    "Pct_Male_HigherEd": 0.785,
+    "Pct_Female_MidEd": 0.052,
+    "Pct_Male_MidEd": 0.064,
+    "Pct_Female_LowEd": 0.007,
+    "Pct_Male_LowEd": 0.019
+  },
+  "georgia": {
+    "Pct_Female_HigherEd": 0.02,
+    "Pct_Male_HigherEd": 0.009,
+    "Pct_Female_MidEd": 0.006,
+    "Pct_Male_MidEd": 0.004,
+    "Pct_Female_LowEd": 0.006,
+    "Pct_Male_LowEd": 0.014
+  },
+  "germany": {
+    "Pct_Female_HigherEd": 0.078,
+    "Pct_Male_HigherEd": 0.05,
+    "Pct_Female_MidEd": 0.022,
+    "Pct_Male_MidEd": 0.015,
+    "Pct_Female_LowEd": 0.07,
+    "Pct_Male_LowEd": 0.089
+  },
+  "ghana": {
+    "Pct_Female_HigherEd": 0.527,
+    "Pct_Male_HigherEd": 0.323,
+    "Pct_Female_MidEd": 0.017,
+    "Pct_Male_MidEd": 0.01,
+    "Pct_Female_LowEd": 0.007,
+    "Pct_Male_LowEd": 0.011
+  },
+  "greece": {
+    "Pct_Female_HigherEd": 0.119,
+    "Pct_Male_HigherEd": 0.18,
+    "Pct_Female_MidEd": 0.07,
+    "Pct_Male_MidEd": 0.069,
+    "Pct_Female_LowEd": 0.086,
+    "Pct_Male_LowEd": 0.104
+  },
+  "guatemala": {
+    "Pct_Female_HigherEd": 0.277,
+    "Pct_Male_HigherEd": 0.154,
+    "Pct_Female_MidEd": 0.091,
+    "Pct_Male_MidEd": 0.103,
+    "Pct_Female_LowEd": 0.038,
+    "Pct_Male_LowEd": 0.037
+  },
+  "guinea": {
+    "Pct_Female_HigherEd": 0.056,
+    "Pct_Male_HigherEd": 0.031,
+    "Pct_Female_MidEd": 0.028,
+    "Pct_Male_MidEd": 0.016,
+    "Pct_Female_LowEd": 0.002,
+    "Pct_Male_LowEd": 0.004
+  },
+  "guyana": {
+    "Pct_Female_HigherEd": 0.93,
+    "Pct_Male_HigherEd": 0.889,
+    "Pct_Female_MidEd": 0.352,
+    "Pct_Male_MidEd": 0.335,
+    "Pct_Female_LowEd": 0.179,
+    "Pct_Male_LowEd": 0.155
+  },
+  "haiti": {
+    "Pct_Female_HigherEd": 0.818,
+    "Pct_Male_HigherEd": 0.726,
+    "Pct_Female_MidEd": 0.153,
+    "Pct_Male_MidEd": 0.111,
+    "Pct_Female_LowEd": 0.041,
+    "Pct_Male_LowEd": 0.048
+  },
+  "honduras": {
+    "Pct_Female_HigherEd": 0.325,
+    "Pct_Male_HigherEd": 0.153,
+    "Pct_Female_MidEd": 0.089,
+    "Pct_Male_MidEd": 0.065,
+    "Pct_Female_LowEd": 0.029,
+    "Pct_Male_LowEd": 0.02
+  },
+  "hungary": {
+    "Pct_Female_HigherEd": 0.13,
+    "Pct_Male_HigherEd": 0.172,
+    "Pct_Female_MidEd": 0.04,
+    "Pct_Male_MidEd": 0.025,
+    "Pct_Female_LowEd": 0.023,
+    "Pct_Male_LowEd": 0.036
+  },
+  "iceland": {
+    "Pct_Female_HigherEd": 0.328,
+    "Pct_Male_HigherEd": 0.214,
+    "Pct_Female_MidEd": 0.101,
+    "Pct_Male_MidEd": 0.057,
+    "Pct_Female_LowEd": 0.053,
+    "Pct_Male_LowEd": 0.049
+  },
+  "india": {
+    "Pct_Female_HigherEd": 0.042,
+    "Pct_Male_HigherEd": 0.023,
+    "Pct_Female_MidEd": 0.006,
+    "Pct_Male_MidEd": 0.002,
+    "Pct_Female_LowEd": 0.001,
+    "Pct_Male_LowEd": 0.001
+  },
+  "indonesia": {
+    "Pct_Female_HigherEd": 0.084,
+    "Pct_Male_HigherEd": 0.042,
+    "Pct_Female_MidEd": 0.009,
+    "Pct_Male_MidEd": 0.005,
+    "Pct_Female_LowEd": 0.003,
+    "Pct_Male_LowEd": 0.003
+  },
+  "iran": {
+    "Pct_Female_HigherEd": 0.294,
+    "Pct_Male_HigherEd": 0.229,
+    "Pct_Female_MidEd": 0.023,
+    "Pct_Male_MidEd": 0.013,
+    "Pct_Female_LowEd": 0.005,
+    "Pct_Male_LowEd": 0.006
+  },
+  "iraq": {
+    "Pct_Female_HigherEd": 0.069,
+    "Pct_Male_HigherEd": 0.085,
+    "Pct_Female_MidEd": 0.026,
+    "Pct_Male_MidEd": 0.016,
+    "Pct_Female_LowEd": 0.005,
+    "Pct_Male_LowEd": 0.008
+  },
+  "ireland": {
+    "Pct_Female_HigherEd": 0.393,
+    "Pct_Male_HigherEd": 0.325,
+    "Pct_Female_MidEd": 0.198,
+    "Pct_Male_MidEd": 0.183,
+    "Pct_Female_LowEd": 0.334,
+    "Pct_Male_LowEd": 0.297
+  },
+  "israel": {
+    "Pct_Female_HigherEd": 0.075,
+    "Pct_Male_HigherEd": 0.097,
+    "Pct_Female_MidEd": 0.025,
+    "Pct_Male_MidEd": 0.03,
+    "Pct_Female_LowEd": 0.021,
+    "Pct_Male_LowEd": 0.031
+  },
+  "italy": {
+    "Pct_Female_HigherEd": 0.099,
+    "Pct_Male_HigherEd": 0.129,
+    "Pct_Female_MidEd": 0.05,
+    "Pct_Male_MidEd": 0.058,
+    "Pct_Female_LowEd": 0.054,
+    "Pct_Male_LowEd": 0.064
+  },
+  "jamaica": {
+    "Pct_Female_HigherEd": 0.875,
+    "Pct_Male_HigherEd": 0.828,
+    "Pct_Female_MidEd": 0.261,
+    "Pct_Male_MidEd": 0.257,
+    "Pct_Female_LowEd": 0.21,
+    "Pct_Male_LowEd": 0.203
+  },
+  "japan": {
+    "Pct_Female_HigherEd": 0.017,
+    "Pct_Male_HigherEd": 0.01,
+    "Pct_Female_MidEd": 0.003,
+    "Pct_Male_MidEd": 0.001,
+    "Pct_Female_LowEd": 0.003,
+    "Pct_Male_LowEd": 0.002
+  },
+  "jordan": {
+    "Pct_Female_HigherEd": 0.069,
+    "Pct_Male_HigherEd": 0.103,
+    "Pct_Female_MidEd": 0.041,
+    "Pct_Male_MidEd": 0.031,
+    "Pct_Female_LowEd": 0.013,
+    "Pct_Male_LowEd": 0.024
+  },
+  "kazakhstan": {
+    "Pct_Female_HigherEd": 0.005,
+    "Pct_Male_HigherEd": 0.003,
+    "Pct_Female_MidEd": 0.001,
+    "Pct_Male_MidEd": 0.001,
+    "Pct_Female_LowEd": 0.002,
+    "Pct_Male_LowEd": 0.004
+  },
+  "kenya": {
+    "Pct_Female_HigherEd": 0.577,
+    "Pct_Male_HigherEd": 0.412,
+    "Pct_Female_MidEd": 0.063,
+    "Pct_Male_MidEd": 0.031,
+    "Pct_Female_LowEd": 0.009,
+    "Pct_Male_LowEd": 0.008
+  },
+  "korea": {
+    "Pct_Female_HigherEd": 0.164,
+    "Pct_Male_HigherEd": 0.071,
+    "Pct_Female_MidEd": 0.024,
+    "Pct_Male_MidEd": 0.016,
+    "Pct_Female_LowEd": 0.029,
+    "Pct_Male_LowEd": 0.037
+  },
+  "kuwait": {
+    "Pct_Female_HigherEd": 0.053,
+    "Pct_Male_HigherEd": 0.067,
+    "Pct_Female_MidEd": 0.003,
+    "Pct_Male_MidEd": 0.003,
+    "Pct_Female_LowEd": 0.003,
+    "Pct_Male_LowEd": 0.003
+  },
+  "kyrgyzstan": {
+    "Pct_Female_HigherEd": 0.003,
+    "Pct_Male_HigherEd": 0.003,
+    "Pct_Female_MidEd": 0.0,
+    "Pct_Male_MidEd": 0.0,
+    "Pct_Female_LowEd": 0.002,
+    "Pct_Male_LowEd": 0.01
+  },
+  "laos": {
+    "Pct_Female_HigherEd": 0.328,
+    "Pct_Male_HigherEd": 0.291,
+    "Pct_Female_MidEd": 0.095,
+    "Pct_Male_MidEd": 0.066,
+    "Pct_Female_LowEd": 0.068,
+    "Pct_Male_LowEd": 0.069
+  },
+  "latvia": {
+    "Pct_Female_HigherEd": 0.065,
+    "Pct_Male_HigherEd": 0.055,
+    "Pct_Female_MidEd": 0.015,
+    "Pct_Male_MidEd": 0.007,
+    "Pct_Female_LowEd": 0.013,
+    "Pct_Male_LowEd": 0.024
+  },
+  "lebanon": {
+    "Pct_Female_HigherEd": 0.585,
+    "Pct_Male_HigherEd": 0.507,
+    "Pct_Female_MidEd": 0.21,
+    "Pct_Male_MidEd": 0.163,
+    "Pct_Female_LowEd": 0.069,
+    "Pct_Male_LowEd": 0.11
+  },
+  "lesotho": {
+    "Pct_Female_HigherEd": 0.076,
+    "Pct_Male_HigherEd": 0.091,
+    "Pct_Female_MidEd": 0.003,
+    "Pct_Male_MidEd": 0.003,
+    "Pct_Female_LowEd": 0.0,
+    "Pct_Male_LowEd": 0.001
+  },
+  "liberia": {
+    "Pct_Female_HigherEd": 0.571,
+    "Pct_Male_HigherEd": 0.423,
+    "Pct_Female_MidEd": 0.09,
+    "Pct_Male_MidEd": 0.019,
+    "Pct_Female_LowEd": 0.003,
+    "Pct_Male_LowEd": 0.004
+  },
+  "libya": {
+    "Pct_Female_HigherEd": 0.074,
+    "Pct_Male_HigherEd": 0.047,
+    "Pct_Female_MidEd": 0.016,
+    "Pct_Male_MidEd": 0.01,
+    "Pct_Female_LowEd": 0.004,
+    "Pct_Male_LowEd": 0.005
+  },
+  "lithuania": {
+    "Pct_Female_HigherEd": 0.092,
+    "Pct_Male_HigherEd": 0.077,
+    "Pct_Female_MidEd": 0.034,
+    "Pct_Male_MidEd": 0.018,
+    "Pct_Female_LowEd": 0.078,
+    "Pct_Male_LowEd": 0.169
+  },
+  "luxembourg": {
+    "Pct_Female_HigherEd": 0.101,
+    "Pct_Male_HigherEd": 0.084,
+    "Pct_Female_MidEd": 0.105,
+    "Pct_Male_MidEd": 0.084,
+    "Pct_Female_LowEd": 0.086,
+    "Pct_Male_LowEd": 0.062
+  },
+  "macedonia": {
+    "Pct_Female_HigherEd": 0.323,
+    "Pct_Male_HigherEd": 0.239,
+    "Pct_Female_MidEd": 0.11,
+    "Pct_Male_MidEd": 0.102,
+    "Pct_Female_LowEd": 0.097,
+    "Pct_Male_LowEd": 0.166
+  },
+  "madagascar": {
+    "Pct_Female_HigherEd": 0.08,
+    "Pct_Male_HigherEd": 0.061,
+    "Pct_Female_MidEd": 0.014,
+    "Pct_Male_MidEd": 0.005,
+    "Pct_Female_LowEd": 0.002,
+    "Pct_Male_LowEd": 0.001
+  },
+  "malawi": {
+    "Pct_Female_HigherEd": 0.377,
+    "Pct_Male_HigherEd": 0.09,
+    "Pct_Female_MidEd": 0.032,
+    "Pct_Male_MidEd": 0.008,
+    "Pct_Female_LowEd": 0.001,
+    "Pct_Male_LowEd": 0.001
+  },
+  "malaysia": {
+    "Pct_Female_HigherEd": 0.335,
+    "Pct_Male_HigherEd": 0.216,
+    "Pct_Female_MidEd": 0.012,
+    "Pct_Male_MidEd": 0.005,
+    "Pct_Female_LowEd": 0.005,
+    "Pct_Male_LowEd": 0.004
+  },
+  "maldives": {
+    "Pct_Female_HigherEd": 0.014,
+    "Pct_Male_HigherEd": 0.012,
+    "Pct_Female_MidEd": 0.008,
+    "Pct_Male_MidEd": 0.002,
+    "Pct_Female_LowEd": 0.001,
+    "Pct_Male_LowEd": 0.001
+  },
+  "mali": {
+    "Pct_Female_HigherEd": 0.126,
+    "Pct_Male_HigherEd": 0.1,
+    "Pct_Female_MidEd": 0.008,
+    "Pct_Male_MidEd": 0.011,
+    "Pct_Female_LowEd": 0.004,
+    "Pct_Male_LowEd": 0.013
+  },
+  "malta": {
+    "Pct_Female_HigherEd": 0.754,
+    "Pct_Male_HigherEd": 0.652,
+    "Pct_Female_MidEd": 0.305,
+    "Pct_Male_MidEd": 0.276,
+    "Pct_Female_LowEd": 0.245,
+    "Pct_Male_LowEd": 0.284
+  },
+  "mauritania": {
+    "Pct_Female_HigherEd": 0.097,
+    "Pct_Male_HigherEd": 0.047,
+    "Pct_Female_MidEd": 0.049,
+    "Pct_Male_MidEd": 0.027,
+    "Pct_Female_LowEd": 0.004,
+    "Pct_Male_LowEd": 0.012
+  },
+  "mauritius": {
+    "Pct_Female_HigherEd": 0.778,
+    "Pct_Male_HigherEd": 0.608,
+    "Pct_Female_MidEd": 0.086,
+    "Pct_Male_MidEd": 0.046,
+    "Pct_Female_LowEd": 0.088,
+    "Pct_Male_LowEd": 0.076
+  },
+  "mexico": {
+    "Pct_Female_HigherEd": 0.128,
+    "Pct_Male_HigherEd": 0.098,
+    "Pct_Female_MidEd": 0.037,
+    "Pct_Male_MidEd": 0.045,
+    "Pct_Female_LowEd": 0.07,
+    "Pct_Male_LowEd": 0.097
+  },
+  "moldova": {
+    "Pct_Female_HigherEd": 0.02,
+    "Pct_Male_HigherEd": 0.011,
+    "Pct_Female_MidEd": 0.005,
+    "Pct_Male_MidEd": 0.002,
+    "Pct_Female_LowEd": 0.009,
+    "Pct_Male_LowEd": 0.026
+  },
+  "monaco": {
+    "Pct_Female_HigherEd": 0.197,
+    "Pct_Male_HigherEd": 0.141,
+    "Pct_Female_MidEd": 0.21,
+    "Pct_Male_MidEd": 0.038,
+    "Pct_Female_LowEd": 0.2,
+    "Pct_Male_LowEd": 0.149
+  },
+  "mongolia": {
+    "Pct_Female_HigherEd": 0.231,
+    "Pct_Male_HigherEd": 0.108,
+    "Pct_Female_MidEd": 0.017,
+    "Pct_Male_MidEd": 0.001,
+    "Pct_Female_LowEd": 0.0,
+    "Pct_Male_LowEd": 0.0
+  },
+  "morocco": {
+    "Pct_Female_HigherEd": 0.265,
+    "Pct_Male_HigherEd": 0.219,
+    "Pct_Female_MidEd": 0.081,
+    "Pct_Male_MidEd": 0.085,
+    "Pct_Female_LowEd": 0.047,
+    "Pct_Male_LowEd": 0.076
+  },
+  "mozambique": {
+    "Pct_Female_HigherEd": 0.212,
+    "Pct_Male_HigherEd": 0.199,
+    "Pct_Female_MidEd": 0.032,
+    "Pct_Male_MidEd": 0.015,
+    "Pct_Female_LowEd": 0.001,
+    "Pct_Male_LowEd": 0.001
+  },
+  "namibia": {
+    "Pct_Female_HigherEd": 0.035,
+    "Pct_Male_HigherEd": 0.027,
+    "Pct_Female_MidEd": 0.001,
+    "Pct_Male_MidEd": 0.001,
+    "Pct_Female_LowEd": 0.001,
+    "Pct_Male_LowEd": 0.001
+  },
+  "nepal": {
+    "Pct_Female_HigherEd": 0.114,
+    "Pct_Male_HigherEd": 0.053,
+    "Pct_Female_MidEd": 0.007,
+    "Pct_Male_MidEd": 0.002,
+    "Pct_Female_LowEd": 0.0,
+    "Pct_Male_LowEd": 0.0
+  },
+  "netherlands": {
+    "Pct_Female_HigherEd": 0.13,
+    "Pct_Male_HigherEd": 0.108,
+    "Pct_Female_MidEd": 0.032,
+    "Pct_Male_MidEd": 0.026,
+    "Pct_Female_LowEd": 0.047,
+    "Pct_Male_LowEd": 0.057
+  },
+  "new zealand": {
+    "Pct_Female_HigherEd": 0.174,
+    "Pct_Male_HigherEd": 0.165,
+    "Pct_Female_MidEd": 0.096,
+    "Pct_Male_MidEd": 0.119,
+    "Pct_Female_LowEd": 0.058,
+    "Pct_Male_LowEd": 0.053
+  },
+  "nicaragua": {
+    "Pct_Female_HigherEd": 0.305,
+    "Pct_Male_HigherEd": 0.258,
+    "Pct_Female_MidEd": 0.143,
+    "Pct_Male_MidEd": 0.136,
+    "Pct_Female_LowEd": 0.045,
+    "Pct_Male_LowEd": 0.032
+  },
+  "niger": {
+    "Pct_Female_HigherEd": 0.12,
+    "Pct_Male_HigherEd": 0.074,
+    "Pct_Female_MidEd": 0.008,
+    "Pct_Male_MidEd": 0.006,
+    "Pct_Female_LowEd": 0.0,
+    "Pct_Male_LowEd": 0.0
+  },
+  "nigeria": {
+    "Pct_Female_HigherEd": 0.121,
+    "Pct_Male_HigherEd": 0.068,
+    "Pct_Female_MidEd": 0.008,
+    "Pct_Male_MidEd": 0.004,
+    "Pct_Female_LowEd": 0.001,
+    "Pct_Male_LowEd": 0.001
+  },
+  "norway": {
+    "Pct_Female_HigherEd": 0.083,
+    "Pct_Male_HigherEd": 0.077,
+    "Pct_Female_MidEd": 0.039,
+    "Pct_Male_MidEd": 0.023,
+    "Pct_Female_LowEd": 0.043,
+    "Pct_Male_LowEd": 0.035
+  },
+  "occupied palestinian territory": {
+    "Pct_Female_HigherEd": 0.14,
+    "Pct_Male_HigherEd": 0.161,
+    "Pct_Female_MidEd": 0.088,
+    "Pct_Male_MidEd": 0.032,
+    "Pct_Female_LowEd": 0.016,
+    "Pct_Male_LowEd": 0.018
+  },
+  "oman": {
+    "Pct_Female_HigherEd": 0.003,
+    "Pct_Male_HigherEd": 0.003,
+    "Pct_Female_MidEd": 0.001,
+    "Pct_Male_MidEd": 0.001,
+    "Pct_Female_LowEd": 0.001,
+    "Pct_Male_LowEd": 0.001
+  },
+  "pakistan": {
+    "Pct_Female_HigherEd": 0.138,
+    "Pct_Male_HigherEd": 0.062,
+    "Pct_Female_MidEd": 0.026,
+    "Pct_Male_MidEd": 0.009,
+    "Pct_Female_LowEd": 0.004,
+    "Pct_Male_LowEd": 0.005
+  },
+  "panama": {
+    "Pct_Female_HigherEd": 0.249,
+    "Pct_Male_HigherEd": 0.229,
+    "Pct_Female_MidEd": 0.087,
+    "Pct_Male_MidEd": 0.041,
+    "Pct_Female_LowEd": 0.031,
+    "Pct_Male_LowEd": 0.013
+  },
+  "paraguay": {
+    "Pct_Female_HigherEd": 0.042,
+    "Pct_Male_HigherEd": 0.036,
+    "Pct_Female_MidEd": 0.01,
+    "Pct_Male_MidEd": 0.006,
+    "Pct_Female_LowEd": 0.004,
+    "Pct_Male_LowEd": 0.003
+  },
+  "peru": {
+    "Pct_Female_HigherEd": 0.077,
+    "Pct_Male_HigherEd": 0.049,
+    "Pct_Female_MidEd": 0.03,
+    "Pct_Male_MidEd": 0.017,
+    "Pct_Female_LowEd": 0.007,
+    "Pct_Male_LowEd": 0.006
+  },
+  "philippines": {
+    "Pct_Female_HigherEd": 0.141,
+    "Pct_Male_HigherEd": 0.109,
+    "Pct_Female_MidEd": 0.03,
+    "Pct_Male_MidEd": 0.019,
+    "Pct_Female_LowEd": 0.02,
+    "Pct_Male_LowEd": 0.012
+  },
+  "poland": {
+    "Pct_Female_HigherEd": 0.151,
+    "Pct_Male_HigherEd": 0.14,
+    "Pct_Female_MidEd": 0.023,
+    "Pct_Male_MidEd": 0.017,
+    "Pct_Female_LowEd": 0.044,
+    "Pct_Male_LowEd": 0.046
+  },
+  "portugal": {
+    "Pct_Female_HigherEd": 0.142,
+    "Pct_Male_HigherEd": 0.175,
+    "Pct_Female_MidEd": 0.209,
+    "Pct_Male_MidEd": 0.209,
+    "Pct_Female_LowEd": 0.124,
+    "Pct_Male_LowEd": 0.151
+  },
+  "qatar": {
+    "Pct_Female_HigherEd": 0.024,
+    "Pct_Male_HigherEd": 0.013,
+    "Pct_Female_MidEd": 0.005,
+    "Pct_Male_MidEd": 0.002,
+    "Pct_Female_LowEd": 0.003,
+    "Pct_Male_LowEd": 0.001
+  },
+  "romania": {
+    "Pct_Female_HigherEd": 0.078,
+    "Pct_Male_HigherEd": 0.084,
+    "Pct_Female_MidEd": 0.012,
+    "Pct_Male_MidEd": 0.009,
+    "Pct_Female_LowEd": 0.016,
+    "Pct_Male_LowEd": 0.066
+  },
+  "russia": {
+    "Pct_Female_HigherEd": 0.006,
+    "Pct_Male_HigherEd": 0.004,
+    "Pct_Female_MidEd": 0.001,
+    "Pct_Male_MidEd": 0.001,
+    "Pct_Female_LowEd": 0.006,
+    "Pct_Male_LowEd": 0.036
+  },
+  "rwanda": {
+    "Pct_Female_HigherEd": 0.358,
+    "Pct_Male_HigherEd": 0.119,
+    "Pct_Female_MidEd": 0.043,
+    "Pct_Male_MidEd": 0.012,
+    "Pct_Female_LowEd": 0.001,
+    "Pct_Male_LowEd": 0.001
+  },
+  "saint kitts and nevis": {
+    "Pct_Female_HigherEd": 0.804,
+    "Pct_Male_HigherEd": 0.773,
+    "Pct_Female_MidEd": 0.345,
+    "Pct_Male_MidEd": 0.311,
+    "Pct_Female_LowEd": 0.412,
+    "Pct_Male_LowEd": 0.365
+  },
+  "saint lucia": {
+    "Pct_Female_HigherEd": 0.706,
+    "Pct_Male_HigherEd": 0.555,
+    "Pct_Female_MidEd": 0.159,
+    "Pct_Male_MidEd": 0.172,
+    "Pct_Female_LowEd": 0.132,
+    "Pct_Male_LowEd": 0.144
+  },
+  "saint vincent and the grenadines": {
+    "Pct_Female_HigherEd": 0.836,
+    "Pct_Male_HigherEd": 0.786,
+    "Pct_Female_MidEd": 0.209,
+    "Pct_Male_MidEd": 0.263,
+    "Pct_Female_LowEd": 0.213,
+    "Pct_Male_LowEd": 0.192
+  },
+  "saudi arabia": {
+    "Pct_Female_HigherEd": 0.008,
+    "Pct_Male_HigherEd": 0.01,
+    "Pct_Female_MidEd": 0.002,
+    "Pct_Male_MidEd": 0.001,
+    "Pct_Female_LowEd": 0.001,
+    "Pct_Male_LowEd": 0.0
+  },
+  "senegal": {
+    "Pct_Female_HigherEd": 0.148,
+    "Pct_Male_HigherEd": 0.139,
+    "Pct_Female_MidEd": 0.031,
+    "Pct_Male_MidEd": 0.055,
+    "Pct_Female_LowEd": 0.008,
+    "Pct_Male_LowEd": 0.028
+  },
+  "serbia and montenegro": {
+    "Pct_Female_HigherEd": 0.101,
+    "Pct_Male_HigherEd": 0.111,
+    "Pct_Female_MidEd": 0.05,
+    "Pct_Male_MidEd": 0.05,
+    "Pct_Female_LowEd": 0.059,
+    "Pct_Male_LowEd": 0.092
+  },
+  "seychelles": {
+    "Pct_Female_HigherEd": 0.884,
+    "Pct_Male_HigherEd": 0.681,
+    "Pct_Female_MidEd": 0.286,
+    "Pct_Male_MidEd": 0.159,
+    "Pct_Female_LowEd": 0.172,
+    "Pct_Male_LowEd": 0.134
+  },
+  "singapore": {
+    "Pct_Female_HigherEd": 0.321,
+    "Pct_Male_HigherEd": 0.207,
+    "Pct_Female_MidEd": 0.024,
+    "Pct_Male_MidEd": 0.015,
+    "Pct_Female_LowEd": 0.016,
+    "Pct_Male_LowEd": 0.013
+  },
+  "slovakia": {
+    "Pct_Female_HigherEd": 0.111,
+    "Pct_Male_HigherEd": 0.137,
+    "Pct_Female_MidEd": 0.089,
+    "Pct_Male_MidEd": 0.068,
+    "Pct_Female_LowEd": 0.108,
+    "Pct_Male_LowEd": 0.142
+  },
+  "slovenia": {
+    "Pct_Female_HigherEd": 0.081,
+    "Pct_Male_HigherEd": 0.09,
+    "Pct_Female_MidEd": 0.032,
+    "Pct_Male_MidEd": 0.028,
+    "Pct_Female_LowEd": 0.038,
+    "Pct_Male_LowEd": 0.061
+  },
+  "somalia": {
+    "Pct_Female_HigherEd": 0.245,
+    "Pct_Male_HigherEd": 0.203,
+    "Pct_Female_MidEd": 0.049,
+    "Pct_Male_MidEd": 0.032,
+    "Pct_Female_LowEd": 0.008,
+    "Pct_Male_LowEd": 0.009
+  },
+  "south africa": {
+    "Pct_Female_HigherEd": 0.185,
+    "Pct_Male_HigherEd": 0.092,
+    "Pct_Female_MidEd": 0.008,
+    "Pct_Male_MidEd": 0.007,
+    "Pct_Female_LowEd": 0.003,
+    "Pct_Male_LowEd": 0.002
+  },
+  "spain": {
+    "Pct_Female_HigherEd": 0.035,
+    "Pct_Male_HigherEd": 0.035,
+    "Pct_Female_MidEd": 0.03,
+    "Pct_Male_MidEd": 0.027,
+    "Pct_Female_LowEd": 0.029,
+    "Pct_Male_LowEd": 0.031
+  },
+  "sri lanka": {
+    "Pct_Female_HigherEd": 0.27,
+    "Pct_Male_HigherEd": 0.27,
+    "Pct_Female_MidEd": 0.009,
+    "Pct_Male_MidEd": 0.008,
+    "Pct_Female_LowEd": 0.009,
+    "Pct_Male_LowEd": 0.013
+  },
+  "sudan": {
+    "Pct_Female_HigherEd": 0.083,
+    "Pct_Male_HigherEd": 0.063,
+    "Pct_Female_MidEd": 0.005,
+    "Pct_Male_MidEd": 0.004,
+    "Pct_Female_LowEd": 0.0,
+    "Pct_Male_LowEd": 0.0
+  },
+  "suriname": {
+    "Pct_Female_HigherEd": 0.711,
+    "Pct_Male_HigherEd": 0.672,
+    "Pct_Female_MidEd": 0.654,
+    "Pct_Male_MidEd": 0.661,
+    "Pct_Female_LowEd": 0.408,
+    "Pct_Male_LowEd": 0.391
+  },
+  "swaziland": {
+    "Pct_Female_HigherEd": 0.037,
+    "Pct_Male_HigherEd": 0.036,
+    "Pct_Female_MidEd": 0.005,
+    "Pct_Male_MidEd": 0.003,
+    "Pct_Female_LowEd": 0.001,
+    "Pct_Male_LowEd": 0.001
+  },
+  "sweden": {
+    "Pct_Female_HigherEd": 0.047,
+    "Pct_Male_HigherEd": 0.037,
+    "Pct_Female_MidEd": 0.021,
+    "Pct_Male_MidEd": 0.012,
+    "Pct_Female_LowEd": 0.02,
+    "Pct_Male_LowEd": 0.016
+  },
+  "switzerland": {
+    "Pct_Female_HigherEd": 0.098,
+    "Pct_Male_HigherEd": 0.056,
+    "Pct_Female_MidEd": 0.019,
+    "Pct_Male_MidEd": 0.016,
+    "Pct_Female_LowEd": 0.037,
+    "Pct_Male_LowEd": 0.041
+  },
+  "syria": {
+    "Pct_Female_HigherEd": 0.075,
+    "Pct_Male_HigherEd": 0.075,
+    "Pct_Female_MidEd": 0.033,
+    "Pct_Male_MidEd": 0.021,
+    "Pct_Female_LowEd": 0.009,
+    "Pct_Male_LowEd": 0.013
+  },
+  "taiwan": {
+    "Pct_Female_HigherEd": 0.23,
+    "Pct_Male_HigherEd": 0.115,
+    "Pct_Female_MidEd": 0.015,
+    "Pct_Male_MidEd": 0.005,
+    "Pct_Female_LowEd": 0.006,
+    "Pct_Male_LowEd": 0.005
+  },
+  "tajikistan": {
+    "Pct_Female_HigherEd": 0.002,
+    "Pct_Male_HigherEd": 0.001,
+    "Pct_Female_MidEd": 0.0,
+    "Pct_Male_MidEd": 0.0,
+    "Pct_Female_LowEd": 0.002,
+    "Pct_Male_LowEd": 0.01
+  },
+  "tanzania": {
+    "Pct_Female_HigherEd": 0.122,
+    "Pct_Male_HigherEd": 0.1,
+    "Pct_Female_MidEd": 0.018,
+    "Pct_Male_MidEd": 0.008,
+    "Pct_Female_LowEd": 0.002,
+    "Pct_Male_LowEd": 0.002
+  },
+  "thailand": {
+    "Pct_Female_HigherEd": 0.033,
+    "Pct_Male_HigherEd": 0.018,
+    "Pct_Female_MidEd": 0.015,
+    "Pct_Male_MidEd": 0.004,
+    "Pct_Female_LowEd": 0.003,
+    "Pct_Male_LowEd": 0.001
+  },
+  "togo": {
+    "Pct_Female_HigherEd": 0.187,
+    "Pct_Male_HigherEd": 0.125,
+    "Pct_Female_MidEd": 0.009,
+    "Pct_Male_MidEd": 0.007,
+    "Pct_Female_LowEd": 0.003,
+    "Pct_Male_LowEd": 0.004
+  },
+  "trinidad and tobago": {
+    "Pct_Female_HigherEd": 0.849,
+    "Pct_Male_HigherEd": 0.749,
+    "Pct_Female_MidEd": 0.159,
+    "Pct_Male_MidEd": 0.126,
+    "Pct_Female_LowEd": 0.092,
+    "Pct_Male_LowEd": 0.074
+  },
+  "tunisia": {
+    "Pct_Female_HigherEd": 0.174,
+    "Pct_Male_HigherEd": 0.177,
+    "Pct_Female_MidEd": 0.047,
+    "Pct_Male_MidEd": 0.044,
+    "Pct_Female_LowEd": 0.047,
+    "Pct_Male_LowEd": 0.08
+  },
+  "turkey": {
+    "Pct_Female_HigherEd": 0.11,
+    "Pct_Male_HigherEd": 0.074,
+    "Pct_Female_MidEd": 0.042,
+    "Pct_Male_MidEd": 0.036,
+    "Pct_Female_LowEd": 0.045,
+    "Pct_Male_LowEd": 0.06
+  },
+  "turkmenistan": {
+    "Pct_Female_HigherEd": 0.002,
+    "Pct_Male_HigherEd": 0.001,
+    "Pct_Female_MidEd": 0.0,
+    "Pct_Male_MidEd": 0.0,
+    "Pct_Female_LowEd": 0.001,
+    "Pct_Male_LowEd": 0.005
+  },
+  "uganda": {
+    "Pct_Female_HigherEd": 0.597,
+    "Pct_Male_HigherEd": 0.357,
+    "Pct_Female_MidEd": 0.033,
+    "Pct_Male_MidEd": 0.014,
+    "Pct_Female_LowEd": 0.005,
+    "Pct_Male_LowEd": 0.005
+  },
+  "ukraine": {
+    "Pct_Female_HigherEd": 0.024,
+    "Pct_Male_HigherEd": 0.023,
+    "Pct_Female_MidEd": 0.008,
+    "Pct_Male_MidEd": 0.005,
+    "Pct_Female_LowEd": 0.035,
+    "Pct_Male_LowEd": 0.147
+  },
+  "united arab emirates": {
+    "Pct_Female_HigherEd": 0.008,
+    "Pct_Male_HigherEd": 0.005,
+    "Pct_Female_MidEd": 0.002,
+    "Pct_Male_MidEd": 0.001,
+    "Pct_Female_LowEd": 0.001,
+    "Pct_Male_LowEd": 0.0
+  },
+  "united kingdom": {
+    "Pct_Female_HigherEd": 0.19,
+    "Pct_Male_HigherEd": 0.169,
+    "Pct_Female_MidEd": 0.056,
+    "Pct_Male_MidEd": 0.054,
+    "Pct_Female_LowEd": 0.049,
+    "Pct_Male_LowEd": 0.042
+  },
+  "united states": {
+    "Pct_Female_HigherEd": 0.006,
+    "Pct_Male_HigherEd": 0.004,
+    "Pct_Female_MidEd": 0.001,
+    "Pct_Male_MidEd": 0.001,
+    "Pct_Female_LowEd": 0.013,
+    "Pct_Male_LowEd": 0.008
+  },
+  "uruguay": {
+    "Pct_Female_HigherEd": 0.075,
+    "Pct_Male_HigherEd": 0.083,
+    "Pct_Female_MidEd": 0.026,
+    "Pct_Male_MidEd": 0.03,
+    "Pct_Female_LowEd": 0.013,
+    "Pct_Male_LowEd": 0.013
+  },
+  "uzbekistan": {
+    "Pct_Female_HigherEd": 0.003,
+    "Pct_Male_HigherEd": 0.002,
+    "Pct_Female_MidEd": 0.001,
+    "Pct_Male_MidEd": 0.0,
+    "Pct_Female_LowEd": 0.003,
+    "Pct_Male_LowEd": 0.015
+  },
+  "venezuela": {
+    "Pct_Female_HigherEd": 0.037,
+    "Pct_Male_HigherEd": 0.032,
+    "Pct_Female_MidEd": 0.022,
+    "Pct_Male_MidEd": 0.017,
+    "Pct_Female_LowEd": 0.002,
+    "Pct_Male_LowEd": 0.001
+  },
+  "vietnam": {
+    "Pct_Female_HigherEd": 0.21,
+    "Pct_Male_HigherEd": 0.26,
+    "Pct_Female_MidEd": 0.047,
+    "Pct_Male_MidEd": 0.027,
+    "Pct_Female_LowEd": 0.011,
+    "Pct_Male_LowEd": 0.011
+  },
+  "yemen": {
+    "Pct_Female_HigherEd": 0.299,
+    "Pct_Male_HigherEd": 0.219,
+    "Pct_Female_MidEd": 0.056,
+    "Pct_Male_MidEd": 0.029,
+    "Pct_Female_LowEd": 0.011,
+    "Pct_Male_LowEd": 0.009
+  },
+  "zambia": {
+    "Pct_Female_HigherEd": 0.333,
+    "Pct_Male_HigherEd": 0.151,
+    "Pct_Female_MidEd": 0.012,
+    "Pct_Male_MidEd": 0.003,
+    "Pct_Female_LowEd": 0.002,
+    "Pct_Male_LowEd": 0.002
+  },
+  "zimbabwe": {
+    "Pct_Female_HigherEd": 0.101,
+    "Pct_Male_HigherEd": 0.062,
+    "Pct_Female_MidEd": 0.011,
+    "Pct_Male_MidEd": 0.004,
+    "Pct_Female_LowEd": 0.002,
+    "Pct_Male_LowEd": 0.002
+  }
+}

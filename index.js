@@ -1,22 +1,21 @@
-// index.js
-require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
-const bodyParser = require('body-parser');
-const morgan = require('morgan');
-const fs = require('fs');
-const path = require('path');
-const { Parser } = require('json2csv');
-const { Pool } = require('pg');
+require('dotenv').config()
+const express    = require('express')
+const cors       = require('cors')
+const bodyParser = require('body-parser')
+const morgan     = require('morgan')
+const fs         = require('fs')
+const path       = require('path')
+const { Parser } = require('json2csv')
+const { Pool }   = require('pg')
 
-const app = express();
-const port = process.env.PORT || 5000;
+const app  = express()
+const port = process.env.PORT || 5000
 
 // PostgreSQL Pool Setup
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: { rejectUnauthorized: false }
-});
+})
 
 // Create logs table if it doesn't exist
 pool.query(`
@@ -26,168 +25,168 @@ pool.query(`
     timestamp TEXT,
     ip TEXT
   )
-`);
+`)
 
 // Middlewares
-app.use(cors());
-app.use(bodyParser.json());
-app.use(morgan('dev'));
+app.use(cors())
+app.use(bodyParser.json())
+app.use(morgan('dev'))
 
-// Load candidate data from bias_data.json
-const individuals = JSON.parse(fs.readFileSync(path.join(__dirname, 'bias_data.json'), 'utf8'));
+// Load candidate data
+const individuals = JSON.parse(
+  fs.readFileSync(path.join(__dirname, 'bias_data.json'), 'utf8')
+)
 
-// Endpoint: Get all candidate data
+// GET all candidates
 app.get('/api/individuals', (req, res) => {
-  res.json(individuals);
-});
+  res.json(individuals)
+})
 
-// Aggregated summary endpoint
+// Aggregated summary
 app.get('/api/summary', (req, res) => {
-  const total = individuals.length;
-  let totalScore = 0;
-  const biasCounts = {};
+  const total = individuals.length
+  let totalScore = 0
+  const biasCounts = {}
 
   individuals.forEach(candidate => {
-    totalScore += candidate.qualification_score;
+    totalScore += candidate.qualification_score
     candidate.bias_flags.forEach(flag => {
-      const normFlag = flag.toLowerCase();
-      biasCounts[normFlag] = (biasCounts[normFlag] || 0) + 1;
-    });
-  });
-
-  const averageScore = total ? (totalScore / total) : 0;
+      const norm = flag.toLowerCase()
+      biasCounts[norm] = (biasCounts[norm] || 0) + 1
+    })
+  })
 
   res.json({
     totalCandidates: total,
-    averageQualificationScore: averageScore,
+    averageQualificationScore: total ? totalScore / total : 0,
     biasDistribution: biasCounts
-  });
-});
+  })
+})
 
-// Login endpoint with PostgreSQL logging
+// Login with PostgreSQL logging
 app.post('/api/login', async (req, res) => {
-  const { username, password } = req.body;
-  const validUsername = 'admin';
-  const validPassword = 'adminpass';
+  const { username, password } = req.body
+  const validUsername = 'admin'
+  const validPassword = 'adminpass'
 
   if (!username || !password) {
-    return res.status(400).json({ error: "username and password are required" });
+    return res.status(400).json({ error: 'username and password are required' })
   }
-
   if (username.toLowerCase() !== validUsername || password !== validPassword) {
-    return res.status(401).json({ error: "invalid username or password" });
+    return res.status(401).json({ error: 'invalid username or password' })
   }
 
-  const timestamp = new Date().toISOString();
-  const ip = req.ip;
+  const timestamp = new Date().toISOString()
+  const ip        = req.ip
 
   try {
     await pool.query(
       'INSERT INTO logs (username, timestamp, ip) VALUES ($1, $2, $3)',
       [username, timestamp, ip]
-    );
-    console.log(`✅ Logged in: ${username}`);
-    res.json({ status: 'success', user: username });
+    )
+    res.json({ status: 'success', user: username })
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Failed to save login" });
+    console.error(err)
+    res.status(500).json({ error: 'Failed to save login' })
   }
-});
+})
 
-// Endpoint: Get login logs
+// Get login logs
 app.get('/api/logs', async (req, res) => {
   try {
-    const result = await pool.query('SELECT * FROM logs ORDER BY timestamp DESC');
-    res.json(result.rows);
+    const result = await pool.query(
+      'SELECT * FROM logs ORDER BY timestamp DESC'
+    )
+    res.json(result.rows)
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Failed to fetch logs" });
+    console.error(err)
+    res.status(500).json({ error: 'Failed to fetch logs' })
   }
-});
+})
 
-// Endpoint: Export candidate data as CSV
+// Export candidates as CSV
 app.get('/api/export', (req, res) => {
   try {
-    const parser = new Parser();
-    const csv = parser.parse(individuals);
-    res.header('Content-Type', 'text/csv');
-    res.attachment('individuals.csv');
-    return res.send(csv);
+    const parser = new Parser()
+    const csv    = parser.parse(individuals)
+    res.header('Content-Type', 'text/csv')
+    res.attachment('individuals.csv')
+    res.send(csv)
   } catch (err) {
-    return res.status(500).json({ error: err.message });
+    res.status(500).json({ error: err.message })
   }
-});
+})
 
-// New: Simulate AI hiring experience
-app.post('/api/simulate-hiring', (req, res) => {
-  const { name, gender, origin, education, years_experience } = req.body;
-
-  if (!name || !gender || !origin || !education || years_experience === undefined) {
-    return res.status(400).json({ error: "missing fields" });
+// List of countries
+app.get('/api/countries', (req, res) => {
+  try {
+    const stats = JSON.parse(
+      fs.readFileSync(path.join(__dirname, 'country_stats.json'))
+    )
+    const countries = Object.keys(stats).sort()
+    res.json(countries)
+  } catch (err) {
+    console.error('Error reading country_stats.json:', err)
+    res.status(500).json({ error: 'Failed to load country list' })
   }
+})
 
-  const flags = [];
-  let score = 50;
+// Full stats for one country
+app.get('/api/country-stats/:country', (req, res) => {
+  try {
+    const stats = JSON.parse(
+      fs.readFileSync(path.join(__dirname, 'country_stats.json'))
+    )
+    const one = stats[req.params.country]
+    if (!one) {
+      return res.status(404).json({ error: 'country not found' })
+    }
+    res.json(one)
+  } catch (err) {
+    console.error('Error loading stats:', err)
+    res.status(500).json({ error: 'Failed to load stats' })
+  }
+})
 
-  if (gender.toLowerCase() === 'female') flags.push('gender');
-  if (origin.toLowerCase().includes('foreign')) flags.push('migrant');
-  if (!education.toLowerCase().includes('bachelor') && !education.toLowerCase().includes('master')) flags.push('non-degree');
-  if (parseInt(years_experience) < 3) flags.push('low experience');
-
-  score += parseInt(years_experience) * 5;
-  if (education.toLowerCase().includes('phd')) score += 10;
-
-  let decision = 'interview';
-  if (score < 50) decision = 'rejected';
-  else if (score > 75) decision = 'hired';
-
-  res.json({
-    decision,
-    bias_flags: flags,
-    qualification_score: score,
-    name
-  });
-});
-
-// New: Bias fixer playground simulation
+// Bias fixer playground simulation
 app.post('/api/bias-fixer', (req, res) => {
-  const { minScore, tolerance } = req.body;
+  const { minScore, tolerance } = req.body
   if (minScore === undefined || tolerance === undefined) {
-    return res.status(400).json({ error: "missing parameters" });
+    return res.status(400).json({ error: 'missing parameters' })
   }
 
   const simulated = individuals.map(c => {
-    let score = c.qualification_score;
-    let adjusted = score;
-    if (c.bias_flags.includes('gender')) adjusted += tolerance * 5;
-    if (c.bias_flags.includes('migrant')) adjusted += tolerance * 5;
+    let score    = c.qualification_score
+    let adjusted = score
+    if (c.bias_flags.includes('gender'))  adjusted += tolerance * 5
+    if (c.bias_flags.includes('migrant')) adjusted += tolerance * 5
     return {
-      name: c.name,
+      name:           c.name,
       original_score: score,
       adjusted_score: adjusted,
-      hired: adjusted >= minScore
-    };
-  });
+      hired:          adjusted >= minScore
+    }
+  })
 
-  res.json(simulated);
-});
+  res.json(simulated)
+})
 
-// Serve static files from React build
-const buildPath = path.join(__dirname, 'build');
+// Serve React build static files
+const buildPath = path.join(__dirname, 'build')
 if (fs.existsSync(buildPath)) {
-  app.use(express.static(buildPath));
+  app.use(express.static(buildPath))
   app.get('*', (req, res) => {
-    res.sendFile(path.join(buildPath, 'index.html'));
-  });
+    res.sendFile(path.join(buildPath, 'index.html'))
+  })
 }
 
-// Error handling middleware
+// Error handler
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).send('something broke!');
-});
+  console.error(err.stack)
+  res.status(500).send('something broke!')
+})
 
-// Start the server
+// Start server
 app.listen(port, '0.0.0.0', () => {
-  console.log(`Backend server running on port ${port}`);
-});
+  console.log(`Backend server running on port ${port}`)
+})

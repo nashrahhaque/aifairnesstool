@@ -5,6 +5,7 @@ const bodyParser = require('body-parser')
 const morgan     = require('morgan')
 const fs         = require('fs')
 const path       = require('path')
+const axios      = require('axios')
 const { Parser } = require('json2csv')
 const { Pool }   = require('pg')
 
@@ -148,27 +149,53 @@ app.get('/api/country-stats/:country', (req, res) => {
   }
 })
 
-// Bias fixer playground simulation
-app.post('/api/bias-fixer', (req, res) => {
+// Bias fixer playground simulation using ML model
+app.post('/api/bias-fixer', async (req, res) => {
   const { minScore, tolerance } = req.body
   if (minScore === undefined || tolerance === undefined) {
     return res.status(400).json({ error: 'missing parameters' })
   }
 
-  const simulated = individuals.map(c => {
-    let score    = c.qualification_score
-    let adjusted = score
-    if (c.bias_flags.includes('gender'))  adjusted += tolerance * 5
-    if (c.bias_flags.includes('migrant')) adjusted += tolerance * 5
-    return {
-      name:           c.name,
-      original_score: score,
-      adjusted_score: adjusted,
-      hired:          adjusted >= minScore
-    }
-  })
+  try {
+    const stats = JSON.parse(
+      fs.readFileSync(path.join(__dirname, 'country_stats.json'))
+    )
 
-  res.json(simulated)
+    const calls = individuals.map(async c => {
+      const s = stats[c.country] || {}
+      const payload = {
+        age_group: c.age_group,
+        education_level: c.education_level,
+        professional_developer: c.professional_developer,
+        years_code: c.years_code,
+        pct_female_highered: s.pct_female_highered,
+        pct_male_highered:   s.pct_male_highered,
+        pct_female_mided:    s.pct_female_mided,
+        pct_male_mided:      s.pct_male_mided,
+        pct_female_lowed:    s.pct_female_lowed,
+        pct_male_lowed:      s.pct_male_lowed
+      }
+
+      const mlRes = await axios.post(`${process.env.ML_API_URL}/predict`, payload)
+      const modelScore = mlRes.data.qualification_score
+
+      return {
+        name: c.name,
+        original_score: c.qualification_score,
+        adjusted_score: modelScore + tolerance * 5 * (
+          c.bias_flags.includes('gender') + c.bias_flags.includes('migrant')
+        ),
+        hired: modelScore >= minScore
+      }
+    })
+
+    const results = await Promise.all(calls)
+    res.json(results)
+
+  } catch (err) {
+    console.error('ML Bias Fixer error:', err.message)
+    res.status(500).json({ error: 'failed to simulate bias adjustment' })
+  }
 })
 
 // Serve React build static files

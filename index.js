@@ -21,6 +21,15 @@ const { Pool }   = require('pg');
 const app  = express();
 const port = process.env.PORT || 5000;
 
+// ── Disable ETags globally ─────────────────────────────────────────────────
+app.disable('etag');
+
+// ── Add no‑store headers to all /api routes ────────────────────────────────
+app.use('/api', (req, res, next) => {
+  res.set('Cache‑Control', 'no‑store, max-age=0');
+  next();
+});
+
 // ── 0) Read & normalize ML service URL ───────────────────────────────────────
 let ML = process.env.ML_API_URL || '';
 if (!ML) {
@@ -52,7 +61,7 @@ app.use(bodyParser.json());
 app.use(morgan('dev'));
 
 // ── 3) Load & normalize individuals ─────────────────────────────────────────
-let rawIndividuals = JSON.parse(
+const rawIndividuals = JSON.parse(
   fs.readFileSync(path.join(__dirname, 'bias_data.json'), 'utf8')
 );
 const individuals = rawIndividuals
@@ -61,7 +70,7 @@ const individuals = rawIndividuals
     if (!country) console.warn(`⚠️ record ${i} missing country`, c);
     return { ...c, country };
   })
-  .filter(c => typeof c.country === 'string' && c.country);
+  .filter(c => c.country);
 
 // ── 4) Load country stats ────────────────────────────────────────────────────
 const countryStats = JSON.parse(
@@ -70,6 +79,7 @@ const countryStats = JSON.parse(
 
 // ── 5) Public API endpoints ──────────────────────────────────────────────────
 app.get('/api/individuals', (_, res) => {
+  // now always returns 200 + body thanks to disabled ETag / no‑store
   res.json(individuals);
 });
 
@@ -162,7 +172,9 @@ app.post('/api/predict', async (req, res) => {
     const { data } = await axios.post(`${ML}/predict`, req.body);
     res.json(data);
   } catch (err) {
-    console.error('Proxy predict error:', err.response?.status, err.response?.data || err.message);
+    console.error('Proxy predict error:',
+      err.response?.status, err.response?.data || err.message
+    );
     res
       .status(err.response?.status || 500)
       .json({ error: err.response?.data?.detail || err.message });
@@ -180,10 +192,7 @@ app.post('/api/bias-fixer', async (req, res) => {
 
   try {
     const calls = individuals.map(async c => {
-      // fetch country-level stats
       const stats = countryStats[c.country.toLowerCase()] || {};
-
-      // build the ML payload
       const payload = {
         age_group:              c.age_group,
         education_level:        c.education_level,
@@ -197,11 +206,10 @@ app.post('/api/bias-fixer', async (req, res) => {
         pct_male_lowed:         stats.Pct_Male_LowEd
       };
 
-      // get the model’s raw score
       const { data } = await axios.post(`${ML}/predict`, payload);
       const mlScore = data.qualification_score;
 
-      // compute the adjusted score & hiring decision
+      // compute adjusted score & hire decision
       const adjustedScore = mlScore + tolerance * 5 * (
         (c.bias_flags.includes('gender') ? 1 : 0) +
         (c.bias_flags.includes('migrant') ? 1 : 0)
@@ -209,16 +217,15 @@ app.post('/api/bias-fixer', async (req, res) => {
       const hired = adjustedScore >= minScore;
 
       return {
-        name:            c.name,
-        original_score:  c.qualification_score,
-        adjusted_score:  adjustedScore,
+        name:           c.name,
+        original_score: c.qualification_score,
+        adjusted_score: adjustedScore,
         hired
       };
     });
 
     const results = await Promise.all(calls);
     res.json(results);
-
   } catch (err) {
     console.error('ML Bias Fixer error:', err.message);
     res.status(500).json({ error: 'failed to simulate bias adjustment' });

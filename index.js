@@ -16,7 +16,6 @@ const axios      = require('axios').create({
   httpsAgent: new https.Agent({ keepAlive: false }), // avoid stale TLS sockets
   timeout: 15000                                     // 15 s timeout
 });
-const pLimit     = require('p-limit');               // pinned CJS v2.x
 const { Parser } = require('json2csv');
 const { Pool }   = require('pg');
 
@@ -31,7 +30,6 @@ if (!ML) {
   );
   process.exit(1);
 }
-// ensure protocol
 if (!/^https?:\/\//i.test(ML)) {
   ML = 'https://' + ML.replace(/^\/+/, '');
 }
@@ -86,9 +84,7 @@ app.get('/api/summary', (_, res) => {
 
   res.json({
     totalCandidates: total,
-    averageQualificationScore: total
-      ? totalScore / total
-      : 0,
+    averageQualificationScore: total ? totalScore / total : 0,
     biasDistribution: biasCounts
   });
 });
@@ -162,60 +158,50 @@ app.get('/api/export', (_, res) => {
   }
 });
 
-// ── 7) Bias‑fixer simulation (throttled proxy) ──────────────────────────────
+// ── 7) Bias‑fixer simulation (parallel proxy) ───────────────────────────────
 app.post('/api/bias-fixer', async (req, res) => {
   const { minScore, tolerance } = req.body;
   if (minScore == null || tolerance == null) {
-    return res
-      .status(400)
-      .json({ error: 'missing parameters' });
+    return res.status(400).json({ error: 'missing parameters' });
   }
 
   console.log(`→ /api/bias-fixer → ${ML}/predict`);
 
   try {
-    const limit = pLimit(5); // max 5 concurrent ML calls
-
-    const calls = individuals.map(c =>
-      limit(async () => {
-        const stats = countryStats[c.country.toLowerCase()] || {};
-        const payload = {
-          age_group:              c.age_group,
-          education_level:        c.education_level,
-          professional_developer: c.professional_developer,
-          years_code:             c.years_code,
-          pct_female_highered:    stats.Pct_Female_HigherEd,
-          pct_male_highered:      stats.Pct_Male_HigherEd,
-          pct_female_mided:       stats.Pct_Female_MidEd,
-          pct_male_mided:         stats.Pct_Male_MidEd,
-          pct_female_lowed:       stats.Pct_Female_LowEd,
-          pct_male_lowed:         stats.Pct_Male_LowEd
-        };
-        const { data } = await axios.post(
-          `${ML}/predict`,
-          payload
-        );
-        const score = data.qualification_score;
-        return {
-          name:           c.name,
-          original_score: c.qualification_score,
-          adjusted_score: score +
-            tolerance * 5 * (
-              c.bias_flags.includes('gender') +
-              c.bias_flags.includes('migrant')
-            ),
-          hired: score >= minScore
-        };
-      })
-    );
+    // fire all ML calls in parallel
+    const calls = individuals.map(async c => {
+      const stats  = countryStats[c.country.toLowerCase()] || {};
+      const payload = {
+        age_group:              c.age_group,
+        education_level:        c.education_level,
+        professional_developer: c.professional_developer,
+        years_code:             c.years_code,
+        pct_female_highered:    stats.Pct_Female_HigherEd,
+        pct_male_highered:      stats.Pct_Male_HigherEd,
+        pct_female_mided:       stats.Pct_Female_MidEd,
+        pct_male_mided:         stats.Pct_Male_MidEd,
+        pct_female_lowed:       stats.Pct_Female_LowEd,
+        pct_male_lowed:         stats.Pct_Male_LowEd
+      };
+      const { data } = await axios.post(`${ML}/predict`, payload);
+      const score = data.qualification_score;
+      return {
+        name:           c.name,
+        original_score: c.qualification_score,
+        adjusted_score: score + tolerance * 5 * (
+          c.bias_flags.includes('gender') +
+          c.bias_flags.includes('migrant')
+        ),
+        hired: score >= minScore
+      };
+    });
 
     const results = await Promise.all(calls);
     res.json(results);
+
   } catch (err) {
     console.error('ML Bias Fixer error:', err.message);
-    res
-      .status(500)
-      .json({ error: 'failed to simulate bias adjustment' });
+    res.status(500).json({ error: 'failed to simulate bias adjustment' });
   }
 });
 

@@ -12,8 +12,8 @@ const fs         = require('fs');
 const path       = require('path');
 const https      = require('https');
 const axios      = require('axios').create({
-  httpsAgent: new https.Agent({ keepAlive: false }),
-  timeout:   15000
+  httpsAgent: new https.Agent({ keepAlive: false }), // avoid stale TLS sockets
+  timeout:   15000                                   // 15 s timeout
 });
 const { Parser } = require('json2csv');
 const { Pool }   = require('pg');
@@ -21,19 +21,17 @@ const { Pool }   = require('pg');
 const app  = express();
 const port = process.env.PORT || 5000;
 
-// ── Disable ETags globally ─────────────────────────────────────────────────
+// ── Disable ETag + force no‑store on all /api routes ────────────────────────
 app.disable('etag');
-
-// ── Add no‑store headers to all /api routes ────────────────────────────────
 app.use('/api', (req, res, next) => {
-  res.set('Cache‑Control', 'no‑store, max-age=0');
+  res.set('Cache-Control', 'no-store, max-age=0');  // ASCII hyphen here
   next();
 });
 
 // ── 0) Read & normalize ML service URL ───────────────────────────────────────
 let ML = process.env.ML_API_URL || '';
 if (!ML) {
-  console.error('ERROR: process.env.ML_API_URL must be set');
+  console.error('ERROR: process.env.ML_API_URL must be set (e.g. https://your-ml-backend.onrender.com)');
   process.exit(1);
 }
 if (!/^https?:\/\//i.test(ML)) {
@@ -53,7 +51,7 @@ pool.query(`
     timestamp TEXT,
     ip        TEXT
   )
-`).catch(err => console.error('⚠️ DB init error:', err.message));
+`).catch(err => console.error('⚠️  DB init error:', err.message));
 
 // ── 2) Global Middlewares ───────────────────────────────────────────────────
 app.use(cors());
@@ -67,10 +65,10 @@ const rawIndividuals = JSON.parse(
 const individuals = rawIndividuals
   .map((c, i) => {
     const country = (c.country || c.Country || '').trim();
-    if (!country) console.warn(`⚠️ record ${i} missing country`, c);
+    if (!country) console.warn(`⚠️ record ${i} missing country field`, c);
     return { ...c, country };
   })
-  .filter(c => c.country);
+  .filter(c => typeof c.country === 'string' && c.country !== '');
 
 // ── 4) Load country stats ────────────────────────────────────────────────────
 const countryStats = JSON.parse(
@@ -79,7 +77,6 @@ const countryStats = JSON.parse(
 
 // ── 5) Public API endpoints ──────────────────────────────────────────────────
 app.get('/api/individuals', (_, res) => {
-  // now always returns 200 + body thanks to disabled ETag / no‑store
   res.json(individuals);
 });
 
@@ -112,7 +109,9 @@ app.get('/api/countries', (_, res) => {
 
 app.get('/api/country-stats/:country', (req, res) => {
   const one = countryStats[req.params.country.toLowerCase()];
-  if (!one) return res.status(404).json({ error: 'country not found' });
+  if (!one) {
+    return res.status(404).json({ error: 'country not found' });
+  }
   res.json(one);
 });
 
@@ -172,8 +171,10 @@ app.post('/api/predict', async (req, res) => {
     const { data } = await axios.post(`${ML}/predict`, req.body);
     res.json(data);
   } catch (err) {
-    console.error('Proxy predict error:',
-      err.response?.status, err.response?.data || err.message
+    console.error(
+      'Proxy predict error:',
+      err.response?.status,
+      err.response?.data || err.message
     );
     res
       .status(err.response?.status || 500)
@@ -209,7 +210,7 @@ app.post('/api/bias-fixer', async (req, res) => {
       const { data } = await axios.post(`${ML}/predict`, payload);
       const mlScore = data.qualification_score;
 
-      // compute adjusted score & hire decision
+      // compute adjusted score & determine hire on that adjusted score
       const adjustedScore = mlScore + tolerance * 5 * (
         (c.bias_flags.includes('gender') ? 1 : 0) +
         (c.bias_flags.includes('migrant') ? 1 : 0)
@@ -217,9 +218,9 @@ app.post('/api/bias-fixer', async (req, res) => {
       const hired = adjustedScore >= minScore;
 
       return {
-        name:           c.name,
-        original_score: c.qualification_score,
-        adjusted_score: adjustedScore,
+        name:            c.name,
+        original_score:  c.qualification_score,
+        adjusted_score:  adjustedScore,
         hired
       };
     });

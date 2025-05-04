@@ -24,14 +24,17 @@ const port = process.env.PORT || 5000;
 // ── Disable ETag + force no‑store on all /api routes ────────────────────────
 app.disable('etag');
 app.use('/api', (req, res, next) => {
-  res.set('Cache-Control', 'no-store, max-age=0');  // ASCII hyphen here
+  res.set('Cache-Control', 'no-store, max-age=0');
   next();
 });
 
 // ── 0) Read & normalize ML service URL ───────────────────────────────────────
 let ML = process.env.ML_API_URL || '';
 if (!ML) {
-  console.error('ERROR: process.env.ML_API_URL must be set (e.g. https://your-ml-backend.onrender.com)');
+  console.error(
+    'ERROR: process.env.ML_API_URL must be set ' +
+    '(e.g. https://your-ml-backend.onrender.com)'
+  );
   process.exit(1);
 }
 if (!/^https?:\/\//i.test(ML)) {
@@ -58,17 +61,21 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(morgan('dev'));
 
-// ── 3) Load & normalize individuals ─────────────────────────────────────────
+// ── 3) Load & normalize individuals (dashboard data) ────────────────────────
 const rawIndividuals = JSON.parse(
   fs.readFileSync(path.join(__dirname, 'bias_data.json'), 'utf8')
 );
 const individuals = rawIndividuals
   .map((c, i) => {
-    const country = (c.country || c.Country || '').trim();
-    if (!country) console.warn(`⚠️ record ${i} missing country field`, c);
+    // normalize `origin` (or fallback) into `country`
+    const country = (c.origin || c.Origin || c.country || '').trim();
+    if (!country) {
+      console.warn(`⚠️ record ${i} missing origin/country field`, c);
+    }
     return { ...c, country };
   })
-  .filter(c => typeof c.country === 'string' && c.country !== '');
+  .filter(c => c.country);
+console.log(`✅ Loaded ${individuals.length} candidates from bias_data.json`);
 
 // ── 4) Load country stats ────────────────────────────────────────────────────
 const countryStats = JSON.parse(
@@ -84,15 +91,13 @@ app.get('/api/summary', (_, res) => {
   const total = individuals.length;
   let totalScore = 0;
   const biasCounts = {};
-
   individuals.forEach(c => {
     totalScore += c.qualification_score;
-    c.bias_flags.forEach(f => {
+    (c.bias_flags || []).forEach(f => {
       const key = f.toLowerCase();
       biasCounts[key] = (biasCounts[key] || 0) + 1;
     });
   });
-
   res.json({
     totalCandidates: total,
     averageQualificationScore: total ? totalScore / total : 0,
@@ -109,9 +114,7 @@ app.get('/api/countries', (_, res) => {
 
 app.get('/api/country-stats/:country', (req, res) => {
   const one = countryStats[req.params.country.toLowerCase()];
-  if (!one) {
-    return res.status(404).json({ error: 'country not found' });
-  }
+  if (!one) return res.status(404).json({ error: 'country not found' });
   res.json(one);
 });
 
@@ -124,7 +127,6 @@ app.post('/api/login', async (req, res) => {
   if (username.toLowerCase() !== 'admin' || password !== 'adminpass') {
     return res.status(401).json({ error: 'invalid username or password' });
   }
-
   const timestamp = new Date().toISOString();
   try {
     await pool.query(
@@ -164,41 +166,52 @@ app.get('/api/export', (_, res) => {
   }
 });
 
-// ── 8) Single-record proxy for simulate page ─────────────────────────────────
+// ── 8) Single-record proxy for simulate page (ML prediction) ────────────────
 app.post('/api/predict', async (req, res) => {
   console.log('→ proxy /api/predict payload:', req.body);
   try {
     const { data } = await axios.post(`${ML}/predict`, req.body);
     res.json(data);
   } catch (err) {
-    console.error(
-      'Proxy predict error:',
-      err.response?.status,
-      err.response?.data || err.message
-    );
+    console.error('Proxy predict error:', err.response?.status, err.response?.data || err.message);
     res
       .status(err.response?.status || 500)
       .json({ error: err.response?.data?.detail || err.message });
   }
 });
 
-// ── 9) Bias‑fixer batch simulation ────────────────────────────────────────────
+// ── 9) Bias‑fixer batch simulation (playground) ──────────────────────────────
 app.post('/api/bias-fixer', async (req, res) => {
   const { minScore, tolerance } = req.body;
   if (minScore == null || tolerance == null) {
     return res.status(400).json({ error: 'missing parameters' });
   }
+  console.log('→ /api/bias-fixer got payload:', req.body, `– ${individuals.length} candidates`);
 
-  console.log('→ /api/bias-fixer got payload:', req.body);
+  // mapping helpers
+  const educationMap = {
+    'High School': 1,
+    'Bachelors':   2,
+    'Masters':     3,
+    'PhD':         4
+  };
+  function deriveAgeGroup(yearsExp) {
+    if (yearsExp < 2) return 1;
+    if (yearsExp < 5) return 2;
+    if (yearsExp < 10) return 3;
+    return 4;
+  }
 
   try {
-    const calls = individuals.map(async c => {
-      const stats = countryStats[c.country.toLowerCase()] || {};
+    const calls = individuals.map(async person => {
+      const stats = countryStats[ person.country.toLowerCase() ] || {};
+
+      // build the payload for FastAPI /predict
       const payload = {
-        age_group:              c.age_group,
-        education_level:        c.education_level,
-        professional_developer: c.professional_developer,
-        years_code:             c.years_code,
+        age_group:              deriveAgeGroup(person.years_experience),
+        education_level:        educationMap[person.education] || 1,
+        professional_developer: 1,
+        years_code:             person.years_experience,
         pct_female_highered:    stats.Pct_Female_HigherEd,
         pct_male_highered:      stats.Pct_Male_HigherEd,
         pct_female_mided:       stats.Pct_Female_MidEd,
@@ -207,28 +220,32 @@ app.post('/api/bias-fixer', async (req, res) => {
         pct_male_lowed:         stats.Pct_Male_LowEd
       };
 
+      // call the ML service
       const { data } = await axios.post(`${ML}/predict`, payload);
-      const mlScore = data.qualification_score;
 
-      // compute adjusted score & determine hire on that adjusted score
-      const adjustedScore = mlScore + tolerance * 5 * (
-        (c.bias_flags.includes('gender') ? 1 : 0) +
-        (c.bias_flags.includes('migrant') ? 1 : 0)
-      );
-      const hired = adjustedScore >= minScore;
+      // convert to percentage
+      const originalPct = Math.round(data.qualification_score * 100);
+
+      // apply your bias‑fixer bump
+      const bumpCount = (person.bias_flags || [])
+        .filter(f => ['gender','migrant'].includes(f))
+        .length;
+      const adjustedPct = originalPct + tolerance * 5 * bumpCount;
+      const hired = adjustedPct >= minScore;
 
       return {
-        name:            c.name,
-        original_score:  c.qualification_score,
-        adjusted_score:  adjustedScore,
+        name:           person.name,
+        original_score: originalPct,
+        adjusted_score: Math.round(adjustedPct),
         hired
       };
     });
 
     const results = await Promise.all(calls);
     res.json(results);
+
   } catch (err) {
-    console.error('ML Bias Fixer error:', err.message);
+    console.error('ML Bias Fixer error:', err.response?.data || err.message);
     res.status(500).json({ error: 'failed to simulate bias adjustment' });
   }
 });

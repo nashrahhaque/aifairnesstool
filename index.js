@@ -1,4 +1,12 @@
-// index.js
+// index.js – backend entry point
+// -----------------------------------------------------------------------------
+// Express API that serves the React build **and** proxies requests to your
+// FastAPI ML service. Fixes TLS‑handshake / 502 issues by:
+//   • forcing a proper https:// prefix on ML_API_URL
+//   • turning off keep‑alive for outbound HTTPS sockets
+//   • throttling concurrent /predict calls to 5 to avoid socket exhaustion
+// -----------------------------------------------------------------------------
+
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config();
 }
@@ -9,18 +17,26 @@ const bodyParser = require('body-parser');
 const morgan     = require('morgan');
 const fs         = require('fs');
 const path       = require('path');
-const axios      = require('axios');
+const https      = require('https');
+const pLimit     = require('p-limit');
+const axios      = require('axios').create({
+  httpsAgent: new https.Agent({ keepAlive: false }), // avoid stale TLS sockets
+  timeout: 15000                                     // 15 s timeout
+});
 const { Parser } = require('json2csv');
 const { Pool }   = require('pg');
 
 const app  = express();
 const port = process.env.PORT || 5000;
 
-// ── 0) Read ML service URL from env ────────────────────────────────────────────
-const ML = process.env.ML_API_URL;
+// ── 0) Read ML service URL ────────────────────────────────────────────────────
+let ML = process.env.ML_API_URL || '';
 if (!ML) {
   console.error('ERROR: process.env.ML_API_URL must be set (e.g. https://your-ml-backend.onrender.com)');
   process.exit(1);
+}
+if (!/^https?:\/\//i.test(ML)) {
+  ML = 'https://' + ML.replace(/^\/+/, '');
 }
 console.log(`🔍 Backend startup: ML_API_URL = ${ML}`);
 
@@ -36,7 +52,7 @@ pool.query(`
     timestamp TEXT,
     ip        TEXT
   )
-`);
+`).catch(err => console.error('⚠️  DB init error:', err.message));
 
 // ── 2) Middlewares ────────────────────────────────────────────────────────────
 app.use(cors());
@@ -44,18 +60,19 @@ app.use(bodyParser.json());
 app.use(morgan('dev'));
 
 // ── 3) Load candidate + country data ─────────────────────────────────────────
-const individuals  = JSON.parse(fs.readFileSync(path.join(__dirname, 'bias_data.json'),    'utf8'));
-const countryStats = JSON.parse(fs.readFileSync(path.join(__dirname, 'country_stats.json'),'utf8'));
+const individuals  = JSON.parse(
+  fs.readFileSync(path.join(__dirname, 'bias_data.json'),'utf8')
+);
+const countryStats = JSON.parse(
+  fs.readFileSync(path.join(__dirname, 'country_stats.json'),'utf8')
+);
 
-// ── 4) Public API endpoints ───────────────────────────────────────────────────
-
-// GET /api/individuals
-app.get('/api/individuals', (req, res) => {
+// ── 4) Public API endpoints ──────────────────────────────────────────────────
+app.get('/api/individuals', (_, res) => {
   res.json(individuals);
 });
 
-// GET /api/summary
-app.get('/api/summary', (req, res) => {
+app.get('/api/summary', (_, res) => {
   const total = individuals.length;
   let totalScore = 0, biasCounts = {};
   individuals.forEach(c => {
@@ -72,30 +89,34 @@ app.get('/api/summary', (req, res) => {
   });
 });
 
-// GET /api/countries
-app.get('/api/countries', (req, res) => {
-  res.json(Object.keys(countryStats).sort());
+// return capitalised, sorted list of country names
+app.get('/api/countries', (_, res) => {
+  const list = Object.keys(countryStats)
+    .map(n => n.charAt(0).toUpperCase() + n.slice(1))
+    .sort();
+  res.json(list);
 });
 
-// GET /api/country-stats/:country
 app.get('/api/country-stats/:country', (req, res) => {
-  const one = countryStats[req.params.country];
+  const key = req.params.country.toLowerCase();
+  const one = countryStats[key];
   if (!one) return res.status(404).json({ error: 'country not found' });
   res.json(one);
 });
 
-// POST /api/login
 app.post('/api/login', async (req, res) => {
   const { username, password } = req.body;
-  if (!username || !password) return res.status(400).json({ error: 'username and password are required' });
+  if (!username || !password) {
+    return res.status(400).json({ error: 'username and password are required' });
+  }
   if (username.toLowerCase() !== 'admin' || password !== 'adminpass') {
     return res.status(401).json({ error: 'invalid username or password' });
   }
-  const timestamp = new Date().toISOString(), ip = req.ip;
+  const timestamp = new Date().toISOString();
   try {
     await pool.query(
       'INSERT INTO logs (username, timestamp, ip) VALUES ($1,$2,$3)',
-      [username, timestamp, ip]
+      [username, timestamp, req.ip]
     );
     res.json({ status: 'success', user: username });
   } catch (err) {
@@ -104,10 +125,11 @@ app.post('/api/login', async (req, res) => {
   }
 });
 
-// GET /api/logs
-app.get('/api/logs', async (req, res) => {
+app.get('/api/logs', async (_, res) => {
   try {
-    const { rows } = await pool.query('SELECT * FROM logs ORDER BY timestamp DESC');
+    const { rows } = await pool.query(
+      'SELECT * FROM logs ORDER BY timestamp DESC'
+    );
     res.json(rows);
   } catch (err) {
     console.error(err);
@@ -115,8 +137,7 @@ app.get('/api/logs', async (req, res) => {
   }
 });
 
-// GET /api/export
-app.get('/api/export', (req, res) => {
+app.get('/api/export', (_, res) => {
   try {
     const parser = new Parser();
     const csv    = parser.parse(individuals);
@@ -128,58 +149,60 @@ app.get('/api/export', (req, res) => {
   }
 });
 
-// ── 5) Bias‑fixer simulation (calls your ML service) ───────────────────────────
+// ── 5) Bias‑fixer simulation (proxy to ML) ──────────────────────────────────────
 app.post('/api/bias-fixer', async (req, res) => {
   const { minScore, tolerance } = req.body;
   if (minScore == null || tolerance == null) {
     return res.status(400).json({ error: 'missing parameters' });
   }
 
-  console.log(`→ /api/bias-fixer: calling ML → ${ML}/predict`);
+  console.log(`→ /api/bias-fixer → ${ML}/predict`);
 
   try {
-    const calls = individuals.map(async c => {
-      const stats  = countryStats[c.country] || {};
-      const payload = {
-        age_group:             c.age_group,
-        education_level:       c.education_level,
-        professional_developer: c.professional_developer,
-        years_code:            c.years_code,
-        pct_female_highered:   stats.pct_female_highered,
-        pct_male_highered:     stats.pct_male_highered,
-        pct_female_mided:      stats.pct_female_mided,
-        pct_male_mided:        stats.pct_male_mided,
-        pct_female_lowed:      stats.pct_female_lowed,
-        pct_male_lowed:        stats.pct_male_lowed
-      };
+    const limit = pLimit(5); // max 5 concurrent ML calls
 
-      const mlRes = await axios.post(`${ML}/predict`, payload);
-      const score = mlRes.data.qualification_score;
-
-      return {
-        name:           c.name,
-        original_score: c.qualification_score,
-        adjusted_score: score + tolerance * 5 * (
-          c.bias_flags.includes('gender') + c.bias_flags.includes('migrant')
-        ),
-        hired: score >= minScore
-      };
-    });
+    const calls = individuals.map(c =>
+      limit(async () => {
+        const stats = countryStats[c.country.toLowerCase()] || {};
+        const payload = {
+          age_group:              c.age_group,
+          education_level:        c.education_level,
+          professional_developer: c.professional_developer,
+          years_code:             c.years_code,
+          pct_female_highered:    stats.Pct_Female_HigherEd,
+          pct_male_highered:      stats.Pct_Male_HigherEd,
+          pct_female_mided:       stats.Pct_Female_MidEd,
+          pct_male_mided:         stats.Pct_Male_MidEd,
+          pct_female_lowed:       stats.Pct_Female_LowEd,
+          pct_male_lowed:         stats.Pct_Male_LowEd
+        };
+        const { data } = await axios.post(`${ML}/predict`, payload);
+        const score = data.qualification_score;
+        return {
+          name:           c.name,
+          original_score: c.qualification_score,
+          adjusted_score: score + tolerance * 5 * (
+            c.bias_flags.includes('gender') +
+            c.bias_flags.includes('migrant')
+          ),
+          hired: score >= minScore
+        };
+      })
+    );
 
     const results = await Promise.all(calls);
     res.json(results);
-
   } catch (err) {
     console.error('ML Bias Fixer error:', err.message);
     res.status(500).json({ error: 'failed to simulate bias adjustment' });
   }
 });
 
-// ── 6) Serve React build ─────────────────────────────────────────────────────
+// ── 6) Serve React build (if present) ────────────────────────────────────────
 const buildPath = path.join(__dirname, 'build');
 if (fs.existsSync(buildPath)) {
   app.use(express.static(buildPath));
-  app.get('*', (req, res) => {
+  app.get('*', (_, res) => {
     res.sendFile(path.join(buildPath, 'index.html'));
   });
 }
@@ -192,5 +215,5 @@ app.use((err, req, res, next) => {
 
 // ── 8) Start server ──────────────────────────────────────────────────────────
 app.listen(port, '0.0.0.0', () => {
-  console.log(`Backend server running on port ${port}`);
+  console.log(`🚀 Backend server running on port ${port}`);
 });

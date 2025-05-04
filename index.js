@@ -12,8 +12,8 @@ const fs         = require('fs');
 const path       = require('path');
 const https      = require('https');
 const axios      = require('axios').create({
-  httpsAgent: new https.Agent({ keepAlive: false }), // avoid stale TLS sockets
-  timeout:   15000                                   // 15 s timeout
+  httpsAgent: new https.Agent({ keepAlive: false }),
+  timeout:   15000
 });
 const { Parser } = require('json2csv');
 const { Pool }   = require('pg');
@@ -24,7 +24,7 @@ const port = process.env.PORT || 5000;
 // ── 0) Read & normalize ML service URL ───────────────────────────────────────
 let ML = process.env.ML_API_URL || '';
 if (!ML) {
-  console.error('ERROR: process.env.ML_API_URL must be set (e.g. https://your-ml-backend.onrender.com)');
+  console.error('ERROR: process.env.ML_API_URL must be set');
   process.exit(1);
 }
 if (!/^https?:\/\//i.test(ML)) {
@@ -44,7 +44,7 @@ pool.query(`
     timestamp TEXT,
     ip        TEXT
   )
-`).catch(err => console.error('⚠️  DB init error:', err.message));
+`).catch(err => console.error('⚠️ DB init error:', err.message));
 
 // ── 2) Global Middlewares ───────────────────────────────────────────────────
 app.use(cors());
@@ -58,12 +58,10 @@ let rawIndividuals = JSON.parse(
 const individuals = rawIndividuals
   .map((c, i) => {
     const country = (c.country || c.Country || '').trim();
-    if (!country) {
-      console.warn(`⚠️  record ${i} missing country field`, c);
-    }
+    if (!country) console.warn(`⚠️ record ${i} missing country`, c);
     return { ...c, country };
   })
-  .filter(c => typeof c.country === 'string' && c.country !== '');
+  .filter(c => typeof c.country === 'string' && c.country);
 
 // ── 4) Load country stats ────────────────────────────────────────────────────
 const countryStats = JSON.parse(
@@ -104,9 +102,7 @@ app.get('/api/countries', (_, res) => {
 
 app.get('/api/country-stats/:country', (req, res) => {
   const one = countryStats[req.params.country.toLowerCase()];
-  if (!one) {
-    return res.status(404).json({ error: 'country not found' });
-  }
+  if (!one) return res.status(404).json({ error: 'country not found' });
   res.json(one);
 });
 
@@ -180,10 +176,14 @@ app.post('/api/bias-fixer', async (req, res) => {
     return res.status(400).json({ error: 'missing parameters' });
   }
 
-  console.log(`→ /api/bias-fixer → ${ML}/predict`);
+  console.log('→ /api/bias-fixer got payload:', req.body);
+
   try {
     const calls = individuals.map(async c => {
+      // fetch country-level stats
       const stats = countryStats[c.country.toLowerCase()] || {};
+
+      // build the ML payload
       const payload = {
         age_group:              c.age_group,
         education_level:        c.education_level,
@@ -196,21 +196,29 @@ app.post('/api/bias-fixer', async (req, res) => {
         pct_female_lowed:       stats.Pct_Female_LowEd,
         pct_male_lowed:         stats.Pct_Male_LowEd
       };
+
+      // get the model’s raw score
       const { data } = await axios.post(`${ML}/predict`, payload);
-      const score = data.qualification_score;
+      const mlScore = data.qualification_score;
+
+      // compute the adjusted score & hiring decision
+      const adjustedScore = mlScore + tolerance * 5 * (
+        (c.bias_flags.includes('gender') ? 1 : 0) +
+        (c.bias_flags.includes('migrant') ? 1 : 0)
+      );
+      const hired = adjustedScore >= minScore;
+
       return {
-        name:           c.name,
-        original_score: c.qualification_score,
-        adjusted_score: score + tolerance * 5 * (
-          c.bias_flags.includes('gender') +
-          c.bias_flags.includes('migrant')
-        ),
-        hired: score >= minScore
+        name:            c.name,
+        original_score:  c.qualification_score,
+        adjusted_score:  adjustedScore,
+        hired
       };
     });
 
     const results = await Promise.all(calls);
     res.json(results);
+
   } catch (err) {
     console.error('ML Bias Fixer error:', err.message);
     res.status(500).json({ error: 'failed to simulate bias adjustment' });

@@ -1,11 +1,5 @@
 // index.js – backend entry point
 // -----------------------------------------------------------------------------
-// Express API that serves the React build **and** proxies requests to your
-// FastAPI ML service. Fixes TLS‑handshake / 502 issues by:
-//   • forcing a proper https:// prefix on ML_API_URL
-//   • turning off keep‑alive for outbound HTTPS sockets
-//   • throttling concurrent /predict calls to 5 to avoid socket exhaustion
-// -----------------------------------------------------------------------------
 
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config();
@@ -18,63 +12,70 @@ const morgan     = require('morgan');
 const fs         = require('fs');
 const path       = require('path');
 const https      = require('https');
-const pLimit     = require('p-limit');
 const axios      = require('axios').create({
   httpsAgent: new https.Agent({ keepAlive: false }), // avoid stale TLS sockets
   timeout: 15000                                     // 15 s timeout
 });
+const pLimit     = require('p-limit');               // pinned CJS v2.x
 const { Parser } = require('json2csv');
 const { Pool }   = require('pg');
 
 const app  = express();
 const port = process.env.PORT || 5000;
 
-// ── 0) Read ML service URL ────────────────────────────────────────────────────
+// ── 0) Read and normalize ML service URL ────────────────────────────────────
 let ML = process.env.ML_API_URL || '';
 if (!ML) {
-  console.error('ERROR: process.env.ML_API_URL must be set (e.g. https://your-ml-backend.onrender.com)');
+  console.error(
+    'ERROR: process.env.ML_API_URL must be set (e.g. ML_API_URL=your-ml-backend.onrender.com)'
+  );
   process.exit(1);
 }
+// ensure protocol
 if (!/^https?:\/\//i.test(ML)) {
   ML = 'https://' + ML.replace(/^\/+/, '');
 }
 console.log(`🔍 Backend startup: ML_API_URL = ${ML}`);
 
-// ── 1) PostgreSQL Pool Setup ──────────────────────────────────────────────────
+// ── 1) PostgreSQL Pool Setup ────────────────────────────────────────────────
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: { rejectUnauthorized: false }
 });
-pool.query(`
-  CREATE TABLE IF NOT EXISTS logs (
-    id        SERIAL PRIMARY KEY,
-    username  TEXT,
-    timestamp TEXT,
-    ip        TEXT
-  )
-`).catch(err => console.error('⚠️  DB init error:', err.message));
+pool
+  .query(`
+    CREATE TABLE IF NOT EXISTS logs (
+      id        SERIAL PRIMARY KEY,
+      username  TEXT,
+      timestamp TEXT,
+      ip        TEXT
+    )
+  `)
+  .catch(err => console.error('⚠️  DB init error:', err.message));
 
-// ── 2) Middlewares ────────────────────────────────────────────────────────────
+// ── 2) Global Middlewares ──────────────────────────────────────────────────
 app.use(cors());
 app.use(bodyParser.json());
 app.use(morgan('dev'));
 
-// ── 3) Load candidate + country data ─────────────────────────────────────────
+// ── 3) Load static data once ───────────────────────────────────────────────
 const individuals  = JSON.parse(
-  fs.readFileSync(path.join(__dirname, 'bias_data.json'),'utf8')
+  fs.readFileSync(path.join(__dirname, 'bias_data.json'), 'utf8')
 );
 const countryStats = JSON.parse(
-  fs.readFileSync(path.join(__dirname, 'country_stats.json'),'utf8')
+  fs.readFileSync(path.join(__dirname, 'country_stats.json'), 'utf8')
 );
 
-// ── 4) Public API endpoints ──────────────────────────────────────────────────
+// ── 4) Public API endpoints ────────────────────────────────────────────────
 app.get('/api/individuals', (_, res) => {
   res.json(individuals);
 });
 
 app.get('/api/summary', (_, res) => {
   const total = individuals.length;
-  let totalScore = 0, biasCounts = {};
+  let totalScore = 0,
+      biasCounts = {};
+
   individuals.forEach(c => {
     totalScore += c.qualification_score;
     c.bias_flags.forEach(f => {
@@ -82,14 +83,16 @@ app.get('/api/summary', (_, res) => {
       biasCounts[key] = (biasCounts[key] || 0) + 1;
     });
   });
+
   res.json({
     totalCandidates: total,
-    averageQualificationScore: total ? totalScore / total : 0,
+    averageQualificationScore: total
+      ? totalScore / total
+      : 0,
     biasDistribution: biasCounts
   });
 });
 
-// return capitalised, sorted list of country names
 app.get('/api/countries', (_, res) => {
   const list = Object.keys(countryStats)
     .map(n => n.charAt(0).toUpperCase() + n.slice(1))
@@ -98,20 +101,28 @@ app.get('/api/countries', (_, res) => {
 });
 
 app.get('/api/country-stats/:country', (req, res) => {
-  const key = req.params.country.toLowerCase();
-  const one = countryStats[key];
+  const one = countryStats[req.params.country.toLowerCase()];
   if (!one) return res.status(404).json({ error: 'country not found' });
   res.json(one);
 });
 
+// ── 5) Login & logs ────────────────────────────────────────────────────────
 app.post('/api/login', async (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) {
-    return res.status(400).json({ error: 'username and password are required' });
+    return res
+      .status(400)
+      .json({ error: 'username and password are required' });
   }
-  if (username.toLowerCase() !== 'admin' || password !== 'adminpass') {
-    return res.status(401).json({ error: 'invalid username or password' });
+  if (
+    username.toLowerCase() !== 'admin' ||
+    password !== 'adminpass'
+  ) {
+    return res
+      .status(401)
+      .json({ error: 'invalid username or password' });
   }
+
   const timestamp = new Date().toISOString();
   try {
     await pool.query(
@@ -137,23 +148,27 @@ app.get('/api/logs', async (_, res) => {
   }
 });
 
+// ── 6) Export CSV ──────────────────────────────────────────────────────────
 app.get('/api/export', (_, res) => {
   try {
     const parser = new Parser();
     const csv    = parser.parse(individuals);
-    res.header('Content-Type', 'text/csv')
-       .attachment('individuals.csv')
-       .send(csv);
+    res
+      .header('Content-Type', 'text/csv')
+      .attachment('individuals.csv')
+      .send(csv);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// ── 5) Bias‑fixer simulation (proxy to ML) ──────────────────────────────────────
+// ── 7) Bias‑fixer simulation (throttled proxy) ──────────────────────────────
 app.post('/api/bias-fixer', async (req, res) => {
   const { minScore, tolerance } = req.body;
   if (minScore == null || tolerance == null) {
-    return res.status(400).json({ error: 'missing parameters' });
+    return res
+      .status(400)
+      .json({ error: 'missing parameters' });
   }
 
   console.log(`→ /api/bias-fixer → ${ML}/predict`);
@@ -176,15 +191,19 @@ app.post('/api/bias-fixer', async (req, res) => {
           pct_female_lowed:       stats.Pct_Female_LowEd,
           pct_male_lowed:         stats.Pct_Male_LowEd
         };
-        const { data } = await axios.post(`${ML}/predict`, payload);
+        const { data } = await axios.post(
+          `${ML}/predict`,
+          payload
+        );
         const score = data.qualification_score;
         return {
           name:           c.name,
           original_score: c.qualification_score,
-          adjusted_score: score + tolerance * 5 * (
-            c.bias_flags.includes('gender') +
-            c.bias_flags.includes('migrant')
-          ),
+          adjusted_score: score +
+            tolerance * 5 * (
+              c.bias_flags.includes('gender') +
+              c.bias_flags.includes('migrant')
+            ),
           hired: score >= minScore
         };
       })
@@ -194,26 +213,28 @@ app.post('/api/bias-fixer', async (req, res) => {
     res.json(results);
   } catch (err) {
     console.error('ML Bias Fixer error:', err.message);
-    res.status(500).json({ error: 'failed to simulate bias adjustment' });
+    res
+      .status(500)
+      .json({ error: 'failed to simulate bias adjustment' });
   }
 });
 
-// ── 6) Serve React build (if present) ────────────────────────────────────────
+// ── 8) Serve React build if present ─────────────────────────────────────────
 const buildPath = path.join(__dirname, 'build');
 if (fs.existsSync(buildPath)) {
   app.use(express.static(buildPath));
-  app.get('*', (_, res) => {
-    res.sendFile(path.join(buildPath, 'index.html'));
-  });
+  app.get('*', (_, res) =>
+    res.sendFile(path.join(buildPath, 'index.html'))
+  );
 }
 
-// ── 7) Global error handler ──────────────────────────────────────────────────
+// ── 9) Global error handler ────────────────────────────────────────────────
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send('something broke!');
 });
 
-// ── 8) Start server ──────────────────────────────────────────────────────────
+// ── 10) Start server ───────────────────────────────────────────────────────
 app.listen(port, '0.0.0.0', () => {
   console.log(`🚀 Backend server running on port ${port}`);
 });

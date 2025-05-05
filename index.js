@@ -70,6 +70,10 @@ const pool = new Pool({
   `).catch(e => { console.error('DB init error:', e.message); process.exit(1); });
 })();
 
+
+/* ── Trust Render's proxy ────────────────────────────────── */
+app.set('trust proxy', 1);
+
 /* ── Session middleware (Postgres store) ─────────────────── */
 app.use(
   session({

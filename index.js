@@ -10,6 +10,7 @@ const fs         = require('fs');
 const path       = require('path');
 const https      = require('https');
 const axios      = require('axios');
+const session    = require('express-session');
 const { Parser } = require('json2csv');
 const { Pool }   = require('pg');
 
@@ -44,24 +45,108 @@ const mlClient = axios.create({
 
 // ─────────────────────────────────────────────────────────────
 // Middleware
-app.use(cors());
+app.use(cors({ origin: true, credentials: true }));
 app.use(bodyParser.json());
 app.use(morgan('dev'));
 
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || 'supersecret',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: false, // set true if HTTPS
+      maxAge: 1000 * 60 * 60 // 1 hour
+    }
+  })
+);
+
 // ─────────────────────────────────────────────────────────────
-// PostgreSQL: login logs
+// PostgreSQL
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: { rejectUnauthorized: false }
 });
+
 pool.query(`
+  CREATE TABLE IF NOT EXISTS users (
+    id SERIAL PRIMARY KEY,
+    username TEXT UNIQUE,
+    password TEXT,
+    role TEXT
+  );
   CREATE TABLE IF NOT EXISTS logs (
     id SERIAL PRIMARY KEY,
     username TEXT,
     timestamp TEXT,
     ip TEXT
-  )
+  );
 `).catch(e => console.error('DB init error:', e.message));
+
+// ─────────────────────────────────────────────────────────────
+// Auth middleware
+const requireAuth = (req, res, next) => {
+  if (!req.session.user) return res.status(401).json({ error: 'unauthorized' });
+  next();
+};
+const requireAdmin = (req, res, next) => {
+  if (!req.session.user || req.session.user.role !== 'admin') {
+    return res.status(403).json({ error: 'admin only' });
+  }
+  next();
+};
+
+// ─────────────────────────────────────────────────────────────
+// Signup + Login + Logout
+app.post('/api/signup', async (req, res) => {
+  const { username, password, role } = req.body;
+  if (!username || !password || !role) {
+    return res.status(400).json({ error: 'all fields required' });
+  }
+  try {
+    await pool.query(
+      'INSERT INTO users(username, password, role) VALUES($1, $2, $3)',
+      [username, password, role]
+    );
+    res.json({ status: 'signup success' });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: 'signup failed' });
+  }
+});
+
+app.post('/api/login', async (req, res) => {
+  const { username, password } = req.body;
+  if (!username || !password)
+    return res.status(400).json({ error: 'username and password required' });
+
+  try {
+    const { rows } = await pool.query(
+      'SELECT * FROM users WHERE username = $1 AND password = $2',
+      [username, password]
+    );
+    if (!rows.length) return res.status(401).json({ error: 'invalid credentials' });
+
+    const user = rows[0];
+    req.session.user = { username: user.username, role: user.role };
+
+    await pool.query(
+      'INSERT INTO logs(username,timestamp,ip) VALUES($1,$2,$3)',
+      [username, new Date().toISOString(), req.ip]
+    );
+
+    res.json({ status: 'login success', user: req.session.user });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: 'login failed' });
+  }
+});
+
+app.get('/api/logout', (req, res) => {
+  req.session.destroy(() => {
+    res.json({ status: 'logout success' });
+  });
+});
 
 // ─────────────────────────────────────────────────────────────
 // Load JSON data
@@ -81,7 +166,7 @@ const countryStats = JSON.parse(
 );
 
 // ─────────────────────────────────────────────────────────────
-// API Endpoints
+// API Endpoints (open)
 app.get('/api/individuals', (_, res) => {
   res.json(individuals);
 });
@@ -104,9 +189,8 @@ app.get('/api/summary', (_, res) => {
   });
 });
 
-// ✔️ COUNTRY ENDPOINTS FIXED
 app.get('/api/countries', (_, res) => {
-  const list = Object.keys(countryStats).sort(); // lowercase values returned
+  const list = Object.keys(countryStats).sort();
   res.json(list);
 });
 
@@ -116,7 +200,6 @@ app.get('/api/country-stats/:country', (req, res) => {
   res.json(stats);
 });
 
-// ✔️ ML PREDICT ENDPOINT (Simulate page)
 app.post('/api/predict', async (req, res) => {
   console.log('→ /api/predict payload:', req.body);
   try {
@@ -130,29 +213,9 @@ app.post('/api/predict', async (req, res) => {
   }
 });
 
-// Login system
-app.post('/api/login', async (req, res) => {
-  const { username, password } = req.body;
-  if (!username || !password) {
-    return res.status(400).json({ error: 'username and password required' });
-  }
-  if (username.toLowerCase() !== 'admin' || password !== 'adminpass') {
-    return res.status(401).json({ error: 'invalid credentials' });
-  }
-  const timestamp = new Date().toISOString();
-  try {
-    await pool.query(
-      'INSERT INTO logs(username,timestamp,ip) VALUES($1,$2,$3)',
-      [username, timestamp, req.ip]
-    );
-    res.json({ status: 'success', user: username });
-  } catch (e) {
-    console.error(e);
-    res.status(500).json({ error: 'login save failed' });
-  }
-});
-
-app.get('/api/logs', async (_, res) => {
+// ─────────────────────────────────────────────────────────────
+// Admin-only logs
+app.get('/api/logs', requireAuth, requireAdmin, async (_, res) => {
   try {
     const { rows } = await pool.query(
       'SELECT * FROM logs ORDER BY timestamp DESC'
@@ -186,6 +249,16 @@ if (fs.existsSync(buildDir)) {
     res.sendFile(path.join(buildDir, 'index.html'))
   );
 }
+
+if (process.env.NODE_ENV === 'production') {
+  setInterval(() => {
+    console.log('⏰ Pinging ML service to keep it awake...');
+    mlClient.get('/')
+      .then(() => console.log('✅ ML service is awake'))
+      .catch(err => console.warn('⚠️ Failed to ping ML service', err.message));
+  }, 1000 * 60 * 30); // every 30 minutes
+}
+
 
 // ─────────────────────────────────────────────────────────────
 // Start

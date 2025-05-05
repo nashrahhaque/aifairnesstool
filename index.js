@@ -6,7 +6,7 @@
  * • Role‑based auth (admin/user)
  * • ML service proxy  ➜  POST /api/predict
  * • Candidate JSON APIs + CSV export
- * • Login‐IP logging
+ * • Login‑IP logging
  */
 
 if (process.env.NODE_ENV !== 'production') {
@@ -52,7 +52,7 @@ const pool = new Pool({
   ssl: { rejectUnauthorized: false }
 });
 
-/* ── Ensure tables exist ─────────────────────────────────── */
+/* ── Ensure core tables exist ────────────────────────────── */
 (async () => {
   await pool.query(`
     CREATE TABLE IF NOT EXISTS users (
@@ -67,20 +67,22 @@ const pool = new Pool({
       timestamp TIMESTAMPTZ DEFAULT now(),
       ip        TEXT
     );
-    -- session table for connect‑pg‑simple gets created automatically
   `).catch(e => { console.error('DB init error:', e.message); process.exit(1); });
 })();
 
-/* ── Session middleware (stored in Postgres) ─────────────── */
+/* ── Session middleware (Postgres store) ─────────────────── */
 app.use(
   session({
-    store: new pgStore({ pool }),
+    store: new pgStore({
+      pool,
+      createTableIfMissing: true          // ← auto‑creates the "session" table
+    }),
     secret: process.env.SESSION_SECRET || 'super‑secret‑dev‑key',
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: process.env.NODE_ENV === 'production', // true if behind HTTPS
-      maxAge: 1000 * 60 * 60 * 4 // 4 h
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 1000 * 60 * 60 * 4          // 4 h
     }
   })
 );
@@ -158,7 +160,7 @@ app.get('/api/logout', (req,res) => {
   req.session.destroy(() => res.json({ status:'logout success' }));
 });
 
-/* ── Load bias demo data (same as before) ────────────────── */
+/* ── Load bias demo data ─────────────────────────────────── */
 const rawIndividuals = JSON.parse(
   fs.readFileSync(path.join(__dirname, 'bias_data.json'),'utf8')
 );
@@ -172,7 +174,7 @@ const countryStats = JSON.parse(
 );
 console.log(`✅  Loaded ${individuals.length} candidates`);
 
-/* ── Open APIs ───────────────────────────────────────────── */
+/* ── Public APIs ─────────────────────────────────────────── */
 app.get('/api/individuals', (_,res) => res.json(individuals));
 
 app.get('/api/summary', (_,res) => {
@@ -224,7 +226,7 @@ app.get('/api/export', (_,res) => {
   } catch (e) { res.status(500).json({ error:e.message }); }
 });
 
-/* ── Serve React build in production ─────────────────────── */
+/* ── Serve React build if it exists ──────────────────────── */
 const buildDir = path.join(__dirname,'build');
 if (fs.existsSync(buildDir)) {
   app.use(express.static(buildDir));

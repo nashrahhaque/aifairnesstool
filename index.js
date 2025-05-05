@@ -144,12 +144,15 @@ app.post('/api/login', async (req,res) => {
                         user.password === password);
     if (!ok) return res.status(401).json({ error:'invalid credentials' });
 
-    req.session.user = { username:user.username, role:user.role };
+    req.session.user = { username: user.username, role: user.role };
+
+    // ✅ Correct timestamp inserted here
     await pool.query(
-      `INSERT INTO logs(username, ip) VALUES($1,$2)`,
+      `INSERT INTO logs(username, ip, timestamp) VALUES($1, $2, now())`,
       [ user.username, req.ip ]
     );
-    res.json({ status:'login success', user:req.session.user });
+
+    res.json({ status:'login success', user: req.session.user });
   } catch (e) {
     console.error(e); res.status(500).json({ error:'login failed' });
   }

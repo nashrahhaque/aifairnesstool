@@ -202,14 +202,26 @@ app.post('/api/predict', async (req,res) => {
 });
 
 /* ── Admin logs & CSV export ─────────────────────────────── */
-app.get('/api/logs', requireAuth, requireAdmin, async (_,res) => {
+app.get('/api/logs', async (req, res) => {
+  const user = req.session.user;
+  console.log('🧪 Session at /api/logs →', user);
+
+  if (!user) {
+    return res.status(401).json({ error: 'unauthorized – not logged in' });
+  }
+  if (user.role !== 'admin') {
+    return res.status(403).json({ error: 'admin only – access denied' });
+  }
+
   try {
     const { rows } = await pool.query('SELECT * FROM logs ORDER BY timestamp DESC');
     res.json(rows);
   } catch (e) {
-    console.error(e); res.status(500).json({ error:'failed to fetch logs' });
+    console.error('❌ Failed to fetch logs:', e);
+    res.status(500).json({ error: 'failed to fetch logs' });
   }
 });
+
 
 app.get('/api/export', (_,res) => {
   try {

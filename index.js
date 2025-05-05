@@ -75,14 +75,16 @@ app.use(
   session({
     store: new pgStore({
       pool,
-      createTableIfMissing: true          // ← auto‑creates the "session" table
+      createTableIfMissing: true
     }),
     secret: process.env.SESSION_SECRET || 'super‑secret‑dev‑key',
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: process.env.NODE_ENV === 'production',
-      maxAge: 1000 * 60 * 60 * 4          // 4 h
+      secure:  process.env.NODE_ENV === 'production',
+      sameSite:'none',            // ← allow cross‑origin cookie
+      httpOnly:true,              // JS can’t touch the cookie (extra safety)
+      maxAge:  1000 * 60 * 60 * 4 // 4 h
     }
   })
 );
@@ -116,11 +118,10 @@ app.post('/api/signup', async (req,res) => {
       `INSERT INTO users(username,password,role) VALUES($1,$2,$3)`,
       [ username.trim().toLowerCase(), hash, role ]
     );
-    return res.json({ status:'signup success' });
+    res.json({ status:'signup success' });
   } catch (e) {
-    if (e.code === '23505')               // unique_violation
-      return res.status(409).json({ error:'username taken' });
-    console.error(e); return res.status(500).json({ error:'signup failed' });
+    if (e.code === '23505')  return res.status(409).json({ error:'username taken' });
+    console.error(e);        res.status(500).json({ error:'signup failed' });
   }
 });
 
@@ -135,21 +136,15 @@ app.post('/api/login', async (req,res) => {
       [ username.trim().toLowerCase() ]
     );
     const user = rows[0];
-
-    // compare bcrypt hash (fallback to raw match for legacy plaintext rows)
-    const ok = user &&
-               (await bcrypt.compare(password, user.password) ||
-                user.password === password);
-
+    const ok = user && (await bcrypt.compare(password, user.password) ||
+                        user.password === password);
     if (!ok) return res.status(401).json({ error:'invalid credentials' });
 
     req.session.user = { username:user.username, role:user.role };
-
     await pool.query(
       `INSERT INTO logs(username, ip) VALUES($1,$2)`,
       [ user.username, req.ip ]
     );
-
     res.json({ status:'login success', user:req.session.user });
   } catch (e) {
     console.error(e); res.status(500).json({ error:'login failed' });
@@ -160,11 +155,11 @@ app.get('/api/logout', (req,res) => {
   req.session.destroy(() => res.json({ status:'logout success' }));
 });
 
-/* ── Load bias demo data ─────────────────────────────────── */
+/* ── Bias demo data load (unchanged) ─────────────────────── */
 const rawIndividuals = JSON.parse(
-  fs.readFileSync(path.join(__dirname, 'bias_data.json'),'utf8')
+  fs.readFileSync(path.join(__dirname,'bias_data.json'),'utf8')
 );
-const individuals = rawIndividuals.map((c,i) => ({
+const individuals = rawIndividuals.map(c => ({
   ...c,
   country: (c.origin||c.Origin||c.country||'').trim().toLowerCase()
 })).filter(c => c.country);
@@ -180,21 +175,18 @@ app.get('/api/individuals', (_,res) => res.json(individuals));
 app.get('/api/summary', (_,res) => {
   const total = individuals.length;
   const avg   = total
-    ? individuals.reduce((s,c)=>s+c.qualification_score,0)/total
-    : 0;
+    ? individuals.reduce((s,c)=>s+c.qualification_score,0)/total : 0;
   const dist  = {};
   individuals.forEach(c =>
     (c.bias_flags||[]).forEach(f => dist[f.toLowerCase()] = (dist[f.toLowerCase()]||0)+1));
   res.json({ totalCandidates:total, averageQualificationScore:avg, biasDistribution:dist });
 });
 
-app.get('/api/countries', (_,res) =>
-  res.json(Object.keys(countryStats).sort()));
+app.get('/api/countries', (_,res) => res.json(Object.keys(countryStats).sort()));
 
 app.get('/api/country-stats/:country', (req,res) => {
   const stats = countryStats[req.params.country.toLowerCase()];
-  return stats ? res.json(stats)
-               : res.status(404).json({ error:'country not found' });
+  stats ? res.json(stats) : res.status(404).json({ error:'country not found' });
 });
 
 /* ── ML proxy ────────────────────────────────────────────── */
@@ -214,7 +206,9 @@ app.get('/api/logs', requireAuth, requireAdmin, async (_,res) => {
   try {
     const { rows } = await pool.query('SELECT * FROM logs ORDER BY timestamp DESC');
     res.json(rows);
-  } catch (e) { console.error(e); res.status(500).json({ error:'failed to fetch logs' }); }
+  } catch (e) {
+    console.error(e); res.status(500).json({ error:'failed to fetch logs' });
+  }
 });
 
 app.get('/api/export', (_,res) => {
@@ -235,9 +229,7 @@ if (fs.existsSync(buildDir)) {
 
 /* ── Keep ML dyno awake on Render ────────────────────────── */
 if (process.env.NODE_ENV === 'production') {
-  setInterval(() => {
-    mlClient.get('/').catch(()=>{});
-  }, 1000*60*30); // every 30 min
+  setInterval(() => { mlClient.get('/').catch(()=>{}); }, 1000*60*30);
 }
 
 /* ── Global error handler & start server ─────────────────── */
